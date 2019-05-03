@@ -20,7 +20,6 @@
 *.rar
 
 # Target files created by Maven #
-*/target/*
-*/target/**
-*/.idea/*
-*/.idea/**
+*target/
+*.idea/
+Government-Project.iml
