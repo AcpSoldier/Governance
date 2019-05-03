@@ -22,3 +22,5 @@
 # Target files created by Maven #
 */target/*
 */target/**
+*/.idea/*
+*/.idea/**
