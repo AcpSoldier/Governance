@@ -4,3 +4,10 @@ main: vision.thomas.government.Government
 authors: [Thomas, AcpSoldier]
 description: A management plugin that allows server owners to efficiently run their server by granting their players autonomy.
 website: https://www.thomas.vision/portfolio/
+commands:
+  government:
+    aliases: [gov]
+    description: A government plugin that allows server owners to efficiently manage their community by granting their player base more autonomy.
+    usage: /gov [config | ? | ? | ? |]
+    permission: government.command
+    permission-message: You don't have the permission <permission>.
