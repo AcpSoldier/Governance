@@ -9,8 +9,16 @@ public final class Government extends JavaPlugin {
 
     public String prefix = ChatColor.GOLD + "" + ChatColor.BOLD + "Government: " + ChatColor.WHITE;
 
+    public Config conf;
+
     @Override
     public void onEnable() {
+
+        saveDefaultConfig();
+
+        conf = new Config(this);
+        conf.config = this.getConfig();
+        conf.reloadConfig(this);
 
         CommandExec cmdEx = new CommandExec(this);
         cmdEx.register(new ConfigCommand(this));
@@ -20,4 +28,5 @@ public final class Government extends JavaPlugin {
     public void onDisable() {
         // Shutdown logic
     }
+
 }

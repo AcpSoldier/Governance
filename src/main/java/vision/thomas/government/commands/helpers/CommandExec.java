@@ -4,15 +4,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import vision.thomas.government.Config;
 import vision.thomas.government.Government;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Copyright 2016 Max Lee (https://github.com/Phoenix616/)
@@ -29,23 +24,29 @@ import java.util.Set;
  * You should have received a copy of the Mozilla Public License v2.0
  * along with this program. If not, see <http://mozilla.org/MPL/2.0/>.
  */
-
 public class CommandExec implements CommandExecutor {
 
     private final Government plugin;
 
+    private Config config;
+
     private Map<String, Map<String, SubCommand>> subCommands = new HashMap<String, Map<String, SubCommand>>();
+
     private String header;
 
     public CommandExec(Government plugin) {
+
         this.plugin = plugin;
         header = ChatColor.WHITE + plugin.getDescription().getAuthors().get(0) + "'s " +
                 ChatColor.GOLD + plugin.getName() +
                 ChatColor.WHITE + " v" + plugin.getDescription().getVersion();
         plugin.getCommand(plugin.getName().toLowerCase()).setExecutor(this);
+
+        config = plugin.conf;
     }
 
     public void register(SubCommand sub) {
+
         if (!subCommands.containsKey(sub.getCommand())) {
             subCommands.put(sub.getCommand(), new LinkedHashMap<String, SubCommand>());
         }
@@ -61,6 +62,22 @@ public class CommandExec implements CommandExecutor {
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        // Denies all attempts to run commands while the plugin is disabled EXCEPT for the "enable" command.
+        if (!config.isPluginEnabled) {
+            if (args.length == 2) {
+                if (args[1].equalsIgnoreCase("enable")) {
+
+                }
+                else {
+                    sender.sendMessage(plugin.prefix + "The plugin is currently disabled from the config. An admin may re-enable it with /gov config enable.");
+                    return true;
+                }
+            }
+            else {
+                sender.sendMessage(plugin.prefix + "The plugin is currently disabled from the config. An admin may re-enable it with /gov config enable.");
+                return true;
+            }
+        }
         if (args.length == 0) {
             List<String> helpText = new ArrayList<String>();
             helpText.add(header);
@@ -72,7 +89,8 @@ public class CommandExec implements CommandExecutor {
                     helpText.add(ChatColor.GOLD + sub.getUsage(label));
                     helpText.add(ChatColor.WHITE + " " + sub.getHelp());
                 }
-            } else {
+            }
+            else {
                 helpText.add("No sub commands found.");
             }
             sender.sendMessage(helpText.toArray(new String[helpText.size()]));
@@ -96,7 +114,8 @@ public class CommandExec implements CommandExecutor {
                 Set<String> subCmdsStr = subCommands.get(cmd.getName()).keySet();
                 sender.sendMessage("Usage: /" + label + " " + Arrays.toString(subCmdsStr.toArray(new String[subCmdsStr.size()])));
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
         }
@@ -115,4 +134,5 @@ public class CommandExec implements CommandExecutor {
         }
         return true;
     }
+
 }
