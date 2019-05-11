@@ -9,16 +9,13 @@ public final class Government extends JavaPlugin {
 
     public String prefix = ChatColor.GOLD + "" + ChatColor.BOLD + "Government: " + ChatColor.WHITE;
 
-    public Config conf;
+    public Config config;
 
     @Override
     public void onEnable() {
 
-        saveDefaultConfig();
-
-        conf = new Config(this);
-        conf.config = this.getConfig();
-        conf.reloadConfig(this);
+        config = new Config(this);
+        config.setup();
 
         CommandExec cmdEx = new CommandExec(this);
         cmdEx.register(new ConfigCommand(this));

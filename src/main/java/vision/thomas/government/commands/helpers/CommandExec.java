@@ -42,7 +42,7 @@ public class CommandExec implements CommandExecutor {
                 ChatColor.WHITE + " v" + plugin.getDescription().getVersion();
         plugin.getCommand(plugin.getName().toLowerCase()).setExecutor(this);
 
-        config = plugin.conf;
+        config = plugin.config;
     }
 
     public void register(SubCommand sub) {

@@ -4,3 +4,6 @@
 #            /----------------------------------------------\
 Settings:
   Enabled: true
+Government:
+  Type: 0
+  Leaders: ''

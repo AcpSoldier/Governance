@@ -2,30 +2,50 @@ package vision.thomas.government;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Config {
 
-    public FileConfiguration config;
+    public FileConfiguration cfg;
 
     private Government plugin;
 
     public boolean isPluginEnabled;
+
+    public int govType;
+
+    public List<String> govLeaders = new ArrayList<String>();
 
     public Config(Government passedPlugin) {
 
         this.plugin = passedPlugin;
     }
 
-    public void reloadConfig(Government plugin) {
+    public void reloadConfig() {
 
-        isPluginEnabled = config.getBoolean("Settings.Enabled");
+        plugin.reloadConfig();
+        cfg = plugin.getConfig(); // 100% needed
+
+        isPluginEnabled = cfg.getBoolean("Settings.Enabled");
+        govType = cfg.getInt("Government.Type");
+        govLeaders = cfg.getStringList("Government.Leaders");
+
         plugin.saveConfig();
     }
 
     public void setPluginEnabled(boolean pluginEnabled) {
 
         isPluginEnabled = pluginEnabled;
-        config.set("Settings.Enabled", isPluginEnabled);
+        cfg.set("Settings.Enabled", isPluginEnabled);
         plugin.saveConfig();
+    }
+
+    public void setup() {
+
+        plugin.saveDefaultConfig();
+        cfg = plugin.getConfig();
+        reloadConfig();
     }
 
 }

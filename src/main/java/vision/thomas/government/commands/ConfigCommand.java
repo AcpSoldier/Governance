@@ -3,11 +3,14 @@ package vision.thomas.government.commands;
 import org.bukkit.command.CommandSender;
 import vision.thomas.government.Config;
 import vision.thomas.government.Government;
+import vision.thomas.government.GovernmentManager;
 import vision.thomas.government.commands.helpers.SubCommand;
 
 public class ConfigCommand extends SubCommand {
 
     private final Government plugin;
+
+    private GovernmentManager govManager;
 
     private final String prefix;
 
@@ -15,9 +18,10 @@ public class ConfigCommand extends SubCommand {
 
     public ConfigCommand(Government plugin) {
 
-        super(plugin, plugin.getName().toLowerCase(), "config", "[enable | disable | reload | autoUpdate | repeatTime | expireTime | minimumOnlinePlayers | passPercent | maxTermLength | minTermLength | maxinOffice | runDelayTime | addCommand | removeCommand | minRespect]", "Allows the plugin configuration to be modified in-game.");
+        super(plugin, plugin.getName().toLowerCase(), "config", "[enable | disable | reload | addLeader | removeLeader | setType]", "Allows the plugin configuration to be modified in-game.");
         this.plugin = plugin;
-        config = plugin.conf;
+        config = plugin.config;
+        govManager = new GovernmentManager(plugin);
         prefix = plugin.prefix;
     }
 
@@ -44,10 +48,39 @@ public class ConfigCommand extends SubCommand {
                 }
             }
             else if (args[0].equalsIgnoreCase("reload")) {
-                sender.sendMessage(prefix + "Getting latest values from the config...");
-
-                sender.sendMessage(prefix + "Config reloaded!");
+                sender.sendMessage(prefix + "Retrieving latest values from config.yml...");
+                config.reloadConfig();
+                sender.sendMessage(prefix + "Configuration reloaded!");
             }
+            else if (args[0].equalsIgnoreCase("addLeader")) {
+                if (args.length > 1) {
+                    sender.sendMessage(govManager.addGovLeader(args[1]));
+                }
+                else {
+                    sender.sendMessage(prefix + "Please specify what player you would like to become a " + govManager.getTypeOfGovLeader() + ".");
+                }
+            }
+            else if (args[0].equalsIgnoreCase("removeLeader")) {
+                if (args.length > 1) {
+                    sender.sendMessage(govManager.removeGovLeader(args[1]));
+                }
+                else {
+                    sender.sendMessage(prefix + "Please specify what player you would no longer like to be a " + govManager.getTypeOfGovLeader() + ".");
+                }
+            }
+            else if (args[0].equalsIgnoreCase("setType")) {
+                if (args.length > 1) {
+                    sender.sendMessage(govManager.setGovType(Integer.parseInt(args[1])));
+                }
+                else {
+                    sender.sendMessage(prefix + "Please specify what what type of government.");
+                }
+            }
+
+            //
+            // Everything below this line is just a placeholder.
+            //
+
             else if (args[0].equalsIgnoreCase("autoUpdate")) {
                 sender.sendMessage(prefix + "Logic for editing config file.");
             }
