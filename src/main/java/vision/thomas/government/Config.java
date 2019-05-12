@@ -17,9 +17,9 @@ public class Config {
 
     public List<String> govLeaders = new ArrayList<String>();
 
-    public Config(Government passedPlugin) {
+    public Config(Government plugin) {
 
-        this.plugin = passedPlugin;
+        this.plugin = plugin;
     }
 
     public void reloadConfig() {

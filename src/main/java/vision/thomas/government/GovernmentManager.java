@@ -10,9 +10,9 @@ public class GovernmentManager {
 
     private Announcement announcement;
 
-    public GovernmentManager(Government passedPlugin) {
+    public GovernmentManager(Government plugin) {
 
-        this.plugin = passedPlugin;
+        this.plugin = plugin;
         this.config = new Config(plugin);
     }
 
