@@ -13,6 +13,10 @@ public class Config {
 
     public boolean isPluginEnabled;
 
+    public static boolean isVoteSoundsForAll;
+
+    public static boolean isVoteSoundsForSelf;
+
     public int govType;
 
     public List<String> govLeaders = new ArrayList<String>();
@@ -28,6 +32,8 @@ public class Config {
         cfg = plugin.getConfig(); // 100% needed
 
         isPluginEnabled = cfg.getBoolean("Settings.Enabled");
+        isVoteSoundsForAll = cfg.getBoolean("Settings.VoteSoundsForAll");
+        isVoteSoundsForSelf = cfg.getBoolean("Settings.VoteSoundsForSelf");
         govType = cfg.getInt("Government.Type");
         govLeaders = cfg.getStringList("Government.Leaders");
 

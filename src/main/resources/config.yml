@@ -4,6 +4,8 @@
 #            /----------------------------------------------\
 Settings:
   Enabled: true
+  VoteSoundsForSelf: true
+  VoteSoundsForAll: true
 Government:
   Type: 0
   Leaders: ''
