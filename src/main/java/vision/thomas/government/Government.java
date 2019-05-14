@@ -10,6 +10,7 @@ import vision.thomas.government.commands.helpers.CommandExec;
 public final class Government extends JavaPlugin {
 
     public String prefix = ChatColor.GOLD + "" + ChatColor.BOLD + "Government: " + ChatColor.YELLOW;
+
     public ChatColor defaultColor = ChatColor.YELLOW;
 
     public Config config;
