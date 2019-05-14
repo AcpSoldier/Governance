@@ -54,7 +54,16 @@ public class ProposalCommand extends SubCommand {
 
                     voteManager.voteInProgress = false;
                     if (args.length > 1) {
-                        announcement.announceProposalCancellation(proposer, voteManager.getCurrentProposal(), args[1]);
+
+                        String reason = "";
+                        for (int i = 0; i < args.length; i++) {
+                            if (i != 0) {
+                                reason += args[i] + " ";
+                            }
+                        }
+                        reason = reason.substring(0, reason.length() - 1);
+
+                        announcement.announceProposalCancellation(proposer, voteManager.getCurrentProposal(), reason);
                     }
                     else {
                         announcement.announceProposalCancellation(proposer, voteManager.getCurrentProposal());

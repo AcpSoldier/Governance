@@ -36,7 +36,16 @@ public class VoteCommand extends SubCommand {
                             voteManager.castVote(voter, voteManager.getCurrentProposal(), args[0]);
 
                             if (args.length > 1) {
-                                announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0], args.toString().replace(args[0], ""));
+
+                                String reason = "";
+                                for (int i = 0; i < args.length; i++) {
+                                    if (i != 0) {
+                                        reason += args[i] + " ";
+                                    }
+                                }
+                                reason = reason.substring(0, reason.length() - 1);
+
+                                announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0], reason);
                             }
                             else {
                                 announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0]);
@@ -47,7 +56,16 @@ public class VoteCommand extends SubCommand {
                             voteManager.castVote(voter, voteManager.getCurrentProposal(), args[0]);
 
                             if (args.length > 1) {
-                                announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0], args.toString().replace(args[0], ""));
+
+                                String reason = "";
+                                for (int i = 0; i < args.length; i++) {
+                                    if (i != 0) {
+                                        reason += args[i] + " ";
+                                    }
+                                }
+                                reason = reason.substring(0, reason.length() - 1);
+
+                                announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0], reason);
                             }
                             else {
                                 announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0]);
