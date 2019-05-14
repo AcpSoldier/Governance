@@ -13,15 +13,18 @@ public class Proposal {
 
     public static Player proposer;
 
-    public static ArrayList<Player> votedYes = new ArrayList<>();
+    public static ArrayList<Player> votedYes;
 
-    public static ArrayList<Player> votedNo = new ArrayList<>();
+    public static ArrayList<Player> votedNo;
 
     public Proposal(Government plugin, String voteType, Player proposer) {
 
         this.plugin = plugin;
         this.type = voteType;
         this.proposer = proposer;
+        votedYes = new ArrayList<>();
+        votedNo = new ArrayList<>();
+
     }
 
     public void cancelProposal(Player p) {
