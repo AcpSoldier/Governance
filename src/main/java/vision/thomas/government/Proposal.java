@@ -1,6 +1,5 @@
 package vision.thomas.government;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -29,19 +28,13 @@ public class Proposal {
 
     public void cancelProposal(Player p) {
 
-        if (this.proposer.equals(p)) {
+        //Since there is no vote, setting these to null SHOULD be harmless. If I get null pointers, then I know why. : )
+        type = null;
+        proposer = null;
+        votedYes = null;
+        votedNo = null;
 
-            //Since there is no vote, setting these to null SHOULD be harmless. If I get null pointers, then I know why. : )
-            type = null;
-            proposer = null;
-            votedYes = null;
-            votedNo = null;
+        p.sendMessage(plugin.prefix + "Your proposal has been cancelled.");
 
-            p.sendMessage(plugin.prefix + "Your proposal has been cancelled.");
-        }
-        else {
-            p.sendMessage(plugin.prefix + "Only " + ChatColor.AQUA + "" + this.proposer.getName() + " can cancel this proposal.");
-        }
     }
-
 }

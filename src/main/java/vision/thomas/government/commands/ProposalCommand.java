@@ -1,5 +1,6 @@
 package vision.thomas.government.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vision.thomas.government.Announcement;
@@ -50,25 +51,32 @@ public class ProposalCommand extends SubCommand {
                 }
             }
             else if (args[0].equalsIgnoreCase("cancel")) {
+
                 if (voteManager.voteInProgress) {
 
-                    voteManager.voteInProgress = false;
-                    if (args.length > 1) {
+                    if (voteManager.getCurrentProposal().proposer.getName().equalsIgnoreCase(proposer.getName()) || proposer.isOp()) {
 
-                        String reason = "";
-                        for (int i = 0; i < args.length; i++) {
-                            if (i != 0) {
-                                reason += args[i] + " ";
+                        voteManager.voteInProgress = false;
+                        if (args.length > 1) {
+
+                            String reason = "";
+                            for (int i = 0; i < args.length; i++) {
+                                if (i != 0) {
+                                    reason += args[i] + " ";
+                                }
                             }
-                        }
-                        reason = reason.substring(0, reason.length() - 1);
+                            reason = reason.substring(0, reason.length() - 1);
 
-                        announcement.announceProposalCancellation(proposer, voteManager.getCurrentProposal(), reason);
+                            announcement.announceProposalCancellation(proposer, voteManager.getCurrentProposal(), reason);
+                        }
+                        else {
+                            announcement.announceProposalCancellation(proposer, voteManager.getCurrentProposal());
+                        }
+                        voteManager.getCurrentProposal().cancelProposal(proposer);
                     }
                     else {
-                        announcement.announceProposalCancellation(proposer, voteManager.getCurrentProposal());
+                        proposer.sendMessage(plugin.prefix + "Only " + ChatColor.AQUA + "" + voteManager.getCurrentProposal().proposer.getName() + plugin.defaultColor + " can cancel this proposal.");
                     }
-                    voteManager.getCurrentProposal().cancelProposal(proposer);
                 }
                 else {
                     proposer.sendMessage(plugin.prefix + "There is currently no active proposal to cancel");
