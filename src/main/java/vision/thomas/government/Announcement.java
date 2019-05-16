@@ -8,6 +8,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import vision.thomas.government.commands.helpers.CenteredMessage;
 
 public class Announcement {
 
@@ -17,6 +18,8 @@ public class Announcement {
 
     private GovernmentManager governmentManager;
 
+    private CenteredMessage centeredMessage = new CenteredMessage();
+
     public Announcement(Government plugin) {
 
         this.plugin = plugin;
@@ -24,29 +27,33 @@ public class Announcement {
         governmentManager = new GovernmentManager(plugin);
     }
 
-    public void announceProposal(Player proposer, Proposal proposal, String appeal) {
+    public void announceProposal(Player proposer, Proposal proposal) {
 
-        String announcement = plugin.prefix + proposer.getName() + "[getRespectLevel logic] " + " has proposed to " + proposal.type + "!";
+        Bukkit.broadcastMessage(plugin.fullLine);
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + proposer.getName() + "[0] " + " has proposed a vote!"));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Run command: " + plugin.highlightColor + "/" + proposal.getCommand()));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Reason: " + plugin.mainColor + "'" + proposal.getReason() + "'"));
 
-        TextComponent voteYesMessage = new TextComponent("CLICK TO VOTE YES");
+        TextComponent voteYesMessage = new TextComponent("                    CLICK TO VOTE YES");
         voteYesMessage.setColor(ChatColor.GREEN);
         voteYesMessage.setBold(true);
-        voteYesMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Vote for the proposal" + proposal.type + ".").create()));
+        voteYesMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/government vote yes [reason]").create()));
         voteYesMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/government vote yes"));
 
-        TextComponent voteNoMessage = new TextComponent("CLICK TO VOTE NO");
+        TextComponent voteNoMessage = new TextComponent("                     CLICK TO VOTE NO");
         voteNoMessage.setColor(ChatColor.RED);
         voteNoMessage.setBold(true);
-        voteNoMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Vote against the proposal" + proposal.type + ".").create()));
+        voteNoMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/government vote no [reason]").create()));
         voteNoMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/government vote no"));
 
-        Bukkit.broadcastMessage(announcement);
-        Bukkit.broadcastMessage(plugin.prefix + proposer.getName() + "'s appeal: " + appeal);
+        for (Player player : Bukkit.getOnlinePlayers()) {
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            p.spigot().sendMessage(voteYesMessage);
-            p.spigot().sendMessage(voteNoMessage);
+            player.spigot().sendMessage(voteYesMessage);
+            player.spigot().sendMessage(voteNoMessage);
         }
+
+        Bukkit.broadcastMessage(plugin.fullLine);
+
         playSoundIfEnabled(proposer, Sound.BLOCK_BEACON_ACTIVATE, 2.0F, 2.0F);
     }
 
@@ -55,13 +62,13 @@ public class Announcement {
         String positionType = "(Logic for what type of government Position)";
         String announcement = plugin.prefix + runner.getName() + "[getRespectLevel logic] " + " is running to be a " + positionType + "!";
 
-        TextComponent voteYesMessage = new TextComponent("CLICK TO VOTE YES");
+        TextComponent voteYesMessage = new TextComponent(centeredMessage.get("CLICK TO VOTE YES"));
         voteYesMessage.setColor(ChatColor.GREEN);
         voteYesMessage.setBold(true);
         voteYesMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Vote to make " + runner.getName() + " the new " + positionType + ".").create()));
         voteYesMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/government vote yes"));
 
-        TextComponent voteNoMessage = new TextComponent("CLICK TO VOTE NO");
+        TextComponent voteNoMessage = new TextComponent(centeredMessage.get("CLICK TO VOTE NO"));
         voteNoMessage.setColor(ChatColor.RED);
         voteNoMessage.setBold(true);
         voteNoMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Vote to make " + runner.getName()).create()));
@@ -114,7 +121,7 @@ public class Announcement {
         }
     }
 
-    private void playSoundIfEnabled(Player player, Sound sound, float volume, float pitch) {
+    public void playSoundIfEnabled(Player player, Sound sound, float volume, float pitch) {
 
         if (config.isVoteSoundsForAll) {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -129,13 +136,13 @@ public class Announcement {
 
     public void announceProposalCancellation(Player canceler, Proposal proposal) {
 
-        Bukkit.broadcastMessage(plugin.prefix + canceler.getName() + " has cancelled the proposal '" + proposal.type + "'.");
+        Bukkit.broadcastMessage(plugin.prefix + canceler.getName() + " has cancelled the proposal '" + proposal.getCommand() + "'.");
         playSoundIfEnabled(canceler, Sound.BLOCK_BEACON_DEACTIVATE, 2.0F, 2.0F);
     }
 
     public void announceProposalCancellation(Player canceler, Proposal proposal, String reason) {
 
-        Bukkit.broadcastMessage(plugin.prefix + canceler.getName() + " has cancelled the proposal '" + proposal.type + "'. Reason: " + ChatColor.ITALIC + "" + ChatColor.WHITE + reason + ".");
+        Bukkit.broadcastMessage(plugin.prefix + canceler.getName() + " has cancelled the proposal '" + proposal.getCommand() + "'. Reason: " + ChatColor.ITALIC + "" + ChatColor.WHITE + reason + ".");
         playSoundIfEnabled(canceler, Sound.BLOCK_BEACON_DEACTIVATE, 2.0F, 2.0F);
     }
 
