@@ -8,28 +8,27 @@ public class Proposal {
 
     private Government plugin;
 
-    public static String type;
+    private String command;
 
-    public static Player proposer;
+    private String reason;
 
-    public static ArrayList<Player> votedYes;
+    private Player proposer;
 
-    public static ArrayList<Player> votedNo;
+    private ArrayList<Player> votedYes;
 
-    public Proposal(Government plugin, String voteType, Player proposer) {
+    private ArrayList<Player> votedNo;
+
+    public Proposal(Government plugin) {
 
         this.plugin = plugin;
-        this.type = voteType;
-        this.proposer = proposer;
         votedYes = new ArrayList<>();
         votedNo = new ArrayList<>();
-
     }
 
     public void cancelProposal(Player p) {
 
         //Since there is no vote, setting these to null SHOULD be harmless. If I get null pointers, then I know why. : )
-        type = null;
+        command = null;
         proposer = null;
         votedYes = null;
         votedNo = null;
@@ -37,4 +36,45 @@ public class Proposal {
         p.sendMessage(plugin.prefix + "Your proposal has been cancelled.");
 
     }
+
+    public String getCommand() {
+
+        return command;
+    }
+
+    public Player getProposer() {
+
+        return proposer;
+    }
+
+    public ArrayList<Player> getVotedYes() {
+
+        return votedYes;
+    }
+
+    public ArrayList<Player> getVotedNo() {
+
+        return votedNo;
+    }
+
+    public void setCommand(String command) {
+
+        this.command = command;
+    }
+
+    public void setProposer(Player proposer) {
+
+        this.proposer = proposer;
+    }
+
+    public String getReason() {
+
+        return reason;
+    }
+
+    public void setReason(String reason) {
+
+        this.reason = reason;
+    }
+
 }

@@ -30,8 +30,9 @@ public class VoteCommand extends SubCommand {
 
                 Player voter = (Player) sender;
 
-                if (voteManager.voteInProgress) {
-                    if (!voteManager.getCurrentProposal().votedNo.contains(voter) && !voteManager.getCurrentProposal().votedYes.contains(voter)) {
+                if (voteManager.isVoteInProgress()) {
+
+                    if (!voteManager.getCurrentProposal().getVotedNo().contains(voter) && !voteManager.getCurrentProposal().getVotedYes().contains(voter)) {
                         if (args[0].equalsIgnoreCase("yes")) {
                             voteManager.castVote(voter, voteManager.getCurrentProposal(), args[0]);
 

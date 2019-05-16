@@ -8,7 +8,7 @@ public class VoteManager {
 
     private static Proposal currentProposal;
 
-    public static boolean voteInProgress = false;
+    private static boolean voteInProgress = false;
 
     public VoteManager(Government plugin) {
 
@@ -19,10 +19,10 @@ public class VoteManager {
 
         if (vote.equalsIgnoreCase("yes")) {
 
-            proposal.votedYes.add(voter);
+            proposal.getVotedYes().add(voter);
         }
         else {
-            proposal.votedNo.add(voter);
+            proposal.getVotedNo().add(voter);
         }
     }
 
@@ -34,6 +34,16 @@ public class VoteManager {
     public void setCurrentProposal(Proposal proposal) {
 
         currentProposal = proposal;
+    }
+
+    public static boolean isVoteInProgress() {
+
+        return voteInProgress;
+    }
+
+    public static void setVoteInProgress(boolean voteInProgress) {
+
+        VoteManager.voteInProgress = voteInProgress;
     }
 
 }
