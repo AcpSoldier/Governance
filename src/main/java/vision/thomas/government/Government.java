@@ -12,6 +12,9 @@ public final class Government extends JavaPlugin {
     public String prefix = ChatColor.GOLD + "" + ChatColor.BOLD + "Government: " + ChatColor.YELLOW;
 
     public ChatColor defaultColor = ChatColor.YELLOW;
+    public ChatColor mainColor = ChatColor.GOLD;
+    public String highlightColor = ChatColor.AQUA + "" + ChatColor.BOLD;
+    public String fullLine = ChatColor.GOLD + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------------------------------------";
 
     public Config config;
 
@@ -21,10 +24,14 @@ public final class Government extends JavaPlugin {
         config = new Config(this);
         config.setup();
 
+        ProposalCommand proposalCommand = new ProposalCommand(this);
+
         CommandExec cmdEx = new CommandExec(this);
         cmdEx.register(new ConfigCommand(this));
         cmdEx.register(new VoteCommand(this));
-        cmdEx.register(new ProposalCommand(this));
+        cmdEx.register(proposalCommand);
+
+        getServer().getPluginManager().registerEvents(proposalCommand, this);
     }
 
     @Override
