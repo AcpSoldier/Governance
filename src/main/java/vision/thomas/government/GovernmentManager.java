@@ -72,6 +72,40 @@ public class GovernmentManager {
         }
     }
 
+    public String addAllowedCommand(String command) {
+
+        config.reloadConfig();
+
+        if(!config.allowedCommands.contains(command)) {
+
+            config.allowedCommands.add(command);
+            config.cfg.set("Commands.Allowed", config.allowedCommands);
+            plugin.saveConfig();
+
+            return plugin.prefix + "Proposals can now be created to run " + plugin.mainColor + "/" + command + ".";
+        }
+        else {
+            return plugin.prefix + "/" + command + " is already an allowed command.";
+        }
+    }
+
+    public String removeAllowedCommand(String command) {
+
+        config.reloadConfig();
+
+        if(config.allowedCommands.contains(command)) {
+
+            config.allowedCommands.remove(command);
+            config.cfg.set("Commands.Allowed", config.allowedCommands);
+            plugin.saveConfig();
+
+            return plugin.prefix + "Proposals can no longer be made for " + plugin.mainColor + "/" + command + ".";
+        }
+        else {
+            return plugin.prefix + plugin.mainColor + "/" + command + plugin.defaultColor + " is not an allowed command and therefore can't be removed.";
+        }
+    }
+
     public String getGovLeaderId(String playerName) {
 
         return Bukkit.getOfflinePlayer(playerName).getUniqueId().toString();

@@ -29,6 +29,7 @@ public class ConfigCommand extends SubCommand {
     public boolean execute(CommandSender sender, String[] args) {
 
         if (args.length > 0) {
+
             if (args[0].equalsIgnoreCase("disable")) {
                 if (!config.isPluginEnabled) {
                     sender.sendMessage(prefix + "The plugin is already disabled.");
@@ -38,6 +39,7 @@ public class ConfigCommand extends SubCommand {
                     sender.sendMessage(prefix + "Plugin disabled.");
                 }
             }
+
             else if (args[0].equalsIgnoreCase("enable")) {
                 if (config.isPluginEnabled) {
                     sender.sendMessage(prefix + "The plugin is already enabled.");
@@ -47,12 +49,16 @@ public class ConfigCommand extends SubCommand {
                     sender.sendMessage(prefix + "Plugin has been re-enabled.");
                 }
             }
+
             else if (args[0].equalsIgnoreCase("reload")) {
+
                 sender.sendMessage(prefix + "Retrieving latest values from config.yml...");
                 config.reloadConfig();
                 sender.sendMessage(prefix + "Configuration reloaded!");
             }
+
             else if (args[0].equalsIgnoreCase("addLeader")) {
+
                 if (args.length > 1) {
                     sender.sendMessage(govManager.addGovLeader(args[1]));
                 }
@@ -60,7 +66,9 @@ public class ConfigCommand extends SubCommand {
                     sender.sendMessage(prefix + "Please specify what player you would like to become a " + govManager.getTypeOfGovLeader() + ".");
                 }
             }
+
             else if (args[0].equalsIgnoreCase("removeLeader")) {
+
                 if (args.length > 1) {
                     sender.sendMessage(govManager.removeGovLeader(args[1]));
                 }
@@ -68,12 +76,51 @@ public class ConfigCommand extends SubCommand {
                     sender.sendMessage(prefix + "Please specify what player you would no longer like to be a " + govManager.getTypeOfGovLeader() + ".");
                 }
             }
+
             else if (args[0].equalsIgnoreCase("setType")) {
+
                 if (args.length > 1) {
                     sender.sendMessage(govManager.setGovType(Integer.parseInt(args[1])));
                 }
                 else {
                     sender.sendMessage(prefix + "Please specify what what type of government.");
+                }
+            }
+
+            else if (args[0].equalsIgnoreCase("addcommand")) {
+
+                if (args.length > 1) {
+
+                    String command = "";
+                    for (int i = 0; i < args.length; i++) {
+                        if (i != 0) {
+                            command += args[i] + " ";
+                        }
+                    }
+                    command = command.substring(0, command.length() - 1);
+
+                    sender.sendMessage(govManager.addAllowedCommand(command));
+                }
+                else {
+                    sender.sendMessage(prefix + "Please specify what command you would like to add as a proposal.");
+                }
+            }
+            else if (args[0].equalsIgnoreCase("removecommand")) {
+
+                if (args.length > 1) {
+
+                    String command = "";
+                    for (int i = 0; i < args.length; i++) {
+                        if (i != 0) {
+                            command += args[i] + " ";
+                        }
+                    }
+                    command = command.substring(0, command.length() - 1);
+
+                    sender.sendMessage(govManager.removeAllowedCommand(command));
+                }
+                else {
+                    sender.sendMessage(prefix + "Please specify what command you would like remove.");
                 }
             }
 
@@ -107,24 +154,6 @@ public class ConfigCommand extends SubCommand {
             }
             else if (args[0].equalsIgnoreCase("runDelayTime")) {
                 sender.sendMessage(prefix + "Logic for editing config file.");
-            }
-            else if (args[0].equalsIgnoreCase("addcommand")) {
-                if (args.length > 1) {
-                    sender.sendMessage(prefix + "Logic for adding a command to the config.");
-                    sender.sendMessage(prefix + "Players can now propose to run the command '" + args[1] + "'.");
-                }
-                else {
-                    sender.sendMessage(prefix + "Please specify what command you would like to add as a proposal.");
-                }
-            }
-            else if (args[0].equalsIgnoreCase("removecommand")) {
-                if (args.length > 1) {
-                    sender.sendMessage(prefix + "Logic for checking if a command exists in the config. If it does, remove it.");
-                    sender.sendMessage(prefix + "Command removed. Players can no longer propose to run the command '" + args[1] + "'.");
-                }
-                else {
-                    sender.sendMessage(prefix + "Please specify what command you would like remove.");
-                }
             }
             else if (args[0].equalsIgnoreCase("minrespect")) {
                 if (args.length > 1) {

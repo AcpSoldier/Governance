@@ -21,6 +21,8 @@ public class Config {
 
     public List<String> govLeaders = new ArrayList<String>();
 
+    public List<String> allowedCommands = new ArrayList<String>();
+
     public Config(Government plugin) {
 
         this.plugin = plugin;
@@ -36,6 +38,7 @@ public class Config {
         isVoteSoundsForSelf = cfg.getBoolean("Settings.VoteSoundsForSelf");
         govType = cfg.getInt("Government.Type");
         govLeaders = cfg.getStringList("Government.Leaders");
+        allowedCommands = cfg.getStringList("Commands.Allowed");
 
         plugin.saveConfig();
     }
