@@ -76,9 +76,9 @@ public class GovernmentManager {
 
         config.reloadConfig();
 
-        if(!config.allowedCommands.contains(command)) {
+        if(!config.allowedCommands.contains(command.toLowerCase())) {
 
-            config.allowedCommands.add(command);
+            config.allowedCommands.add(command.toLowerCase());
             config.cfg.set("Commands.Allowed", config.allowedCommands);
             plugin.saveConfig();
 
@@ -93,9 +93,9 @@ public class GovernmentManager {
 
         config.reloadConfig();
 
-        if(config.allowedCommands.contains(command)) {
+        if(config.allowedCommands.contains(command.toLowerCase())) {
 
-            config.allowedCommands.remove(command);
+            config.allowedCommands.remove(command.toLowerCase());
             config.cfg.set("Commands.Allowed", config.allowedCommands);
             plugin.saveConfig();
 
