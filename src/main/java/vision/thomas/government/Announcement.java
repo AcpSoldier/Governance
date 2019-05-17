@@ -98,11 +98,11 @@ public class Announcement {
     public void announceVote(Player voter, Proposal prop, String vote) {
 
         if (vote.equalsIgnoreCase("yes")) {
-            Bukkit.broadcastMessage(plugin.prefix + voter.getName() + " has voted " + ChatColor.GREEN + vote + plugin.defaultColor + " on the current proposal.");
+            Bukkit.broadcastMessage(plugin.prefix + voter.getName() + " voted " + ChatColor.GREEN + vote + plugin.defaultColor + " on the current proposal.");
             playSoundIfEnabled(voter, Sound.ENTITY_VILLAGER_YES, 2.0F, 1.0F);
         }
         else {
-            Bukkit.broadcastMessage(plugin.prefix + voter.getName() + " has voted " + ChatColor.RED + vote + plugin.defaultColor + " on the current proposal.");
+            Bukkit.broadcastMessage(plugin.prefix + voter.getName() + " voted " + ChatColor.RED + vote + plugin.defaultColor + " on the current proposal.");
             playSoundIfEnabled(voter, Sound.ENTITY_VILLAGER_NO, 2.0F, 1.0F);
         }
     }
@@ -111,12 +111,12 @@ public class Announcement {
 
         if (vote.equalsIgnoreCase("yes")) {
 
-            Bukkit.broadcastMessage(plugin.prefix + voter.getName() + " has voted " + ChatColor.GREEN + vote + plugin.defaultColor + " on the current proposal. Reason: " + ChatColor.WHITE + "" + ChatColor.ITALIC + "\"" + reason + "\".");
+            Bukkit.broadcastMessage(plugin.prefix + voter.getName() + " voted " + ChatColor.GREEN + vote + plugin.defaultColor + " on the current proposal. Reason: " + ChatColor.WHITE + "" + ChatColor.ITALIC + "\"" + reason + "\".");
             playSoundIfEnabled(voter, Sound.ENTITY_VILLAGER_YES, 2.0F, 1.0F);
         }
         else {
 
-            Bukkit.broadcastMessage(plugin.prefix + voter.getName() + " has voted " + ChatColor.RED + vote + plugin.defaultColor + " on the current proposal. Reason: " + ChatColor.WHITE + "" + ChatColor.ITALIC + "\"" + reason + "\".");
+            Bukkit.broadcastMessage(plugin.prefix + voter.getName() + " voted " + ChatColor.RED + vote + plugin.defaultColor + " on the current proposal. Reason: " + ChatColor.WHITE + "" + ChatColor.ITALIC + "\"" + reason + "\".");
             playSoundIfEnabled(voter, Sound.ENTITY_VILLAGER_NO, 2.0F, 1.0F);
         }
     }
@@ -134,15 +134,15 @@ public class Announcement {
         }
     }
 
-    public void announceProposalCancellation(Player canceler, Proposal proposal) {
+    public void announceProposalCancelation(Player canceler, Proposal proposal) {
 
-        Bukkit.broadcastMessage(plugin.prefix + canceler.getName() + " has cancelled the proposal '" + proposal.getCommand() + "'.");
+        Bukkit.broadcastMessage(plugin.prefix + canceler.getName() + " has canceled the proposal /" + proposal.getCommand() + ".");
         playSoundIfEnabled(canceler, Sound.BLOCK_BEACON_DEACTIVATE, 2.0F, 2.0F);
     }
 
-    public void announceProposalCancellation(Player canceler, Proposal proposal, String reason) {
+    public void announceProposalCancelation(Player canceler, Proposal proposal, String reason) {
 
-        Bukkit.broadcastMessage(plugin.prefix + canceler.getName() + " has cancelled the proposal '" + proposal.getCommand() + "'. Reason: " + ChatColor.ITALIC + "" + ChatColor.WHITE + reason + ".");
+        Bukkit.broadcastMessage(plugin.prefix + canceler.getName() + " has canceled the proposal /" + proposal.getCommand() + ". Reason: " + ChatColor.ITALIC + "" + ChatColor.WHITE + reason + ".");
         playSoundIfEnabled(canceler, Sound.BLOCK_BEACON_DEACTIVATE, 2.0F, 2.0F);
     }
 
