@@ -12,11 +12,16 @@ public final class Government extends JavaPlugin {
     public String prefix = ChatColor.GOLD + "" + ChatColor.BOLD + "Government: " + ChatColor.YELLOW;
 
     public ChatColor defaultColor = ChatColor.YELLOW;
+
     public ChatColor mainColor = ChatColor.GOLD;
+
     public String highlightColor = ChatColor.AQUA + "" + ChatColor.BOLD;
+
     public String fullLine = ChatColor.GOLD + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------------------------------------";
 
     public Config config;
+
+    public Announcement announcement = new Announcement(this);
 
     @Override
     public void onEnable() {
