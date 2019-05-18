@@ -18,12 +18,15 @@ public class Announcement {
 
     private GovernmentManager governmentManager;
 
+    private VoteManager voteManager;
+
     private CenteredMessage centeredMessage = new CenteredMessage();
 
     public Announcement(Government plugin) {
 
         this.plugin = plugin;
         config = new Config(plugin);
+        voteManager = new VoteManager(plugin);
         governmentManager = new GovernmentManager(plugin);
     }
 
@@ -146,4 +149,46 @@ public class Announcement {
         playSoundIfEnabled(canceler, Sound.BLOCK_BEACON_DEACTIVATE, 2.0F, 2.0F);
     }
 
+    public void announceVoteTime(int timeLeftInSeconds) {
+
+        String announceTime;
+
+        if (timeLeftInSeconds >= 60) {
+            announceTime = (timeLeftInSeconds/60  + (timeLeftInSeconds/60 != 1 ? " minutes" : " minute"));
+        } else {
+            announceTime = (timeLeftInSeconds  + (timeLeftInSeconds != 1 ? " seconds" : " second"));
+        }
+
+        Bukkit.broadcastMessage(plugin.fullLine);
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + "Only " + plugin.highlightColor + announceTime + plugin.mainColor + " left to vote on the current proposal!"));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Run command: " + plugin.highlightColor + "/" + voteManager.getCurrentProposal().getCommand()));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Reason: " + plugin.mainColor + "'" + voteManager.getCurrentProposal().getReason() + "'"));
+        Bukkit.broadcastMessage(plugin.fullLine);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            playSoundIfEnabled(player, Sound.BLOCK_WOODEN_PRESSURE_PLATE_CLICK_ON, 2.0F, 2.0F);
+        }
+
+    }
+
+    public void announceProposalPassed() {
+        Bukkit.broadcastMessage(plugin.fullLine);
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Proposal to run command: " + plugin.highlightColor + "/" + voteManager.getCurrentProposal().getCommand() + plugin.defaultColor + " has " + ChatColor.GREEN + "PASSED!"));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.highlightColor + "Executing proposal..."));
+        Bukkit.broadcastMessage(plugin.fullLine);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            playSoundIfEnabled(player, Sound.BLOCK_BEACON_POWER_SELECT, 2.0F, 2.0F);
+        }
+    }
+
+    public void announceProposalFail() {
+        Bukkit.broadcastMessage(plugin.fullLine);
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Proposal to run command: " + plugin.highlightColor + "/" + voteManager.getCurrentProposal().getCommand() + plugin.defaultColor + " has " + ChatColor.RED + "FAILED!"));
+        Bukkit.broadcastMessage(plugin.fullLine);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            playSoundIfEnabled(player, Sound.BLOCK_BEACON_DEACTIVATE, 2.0F, 2.0F);
+        }
+    }
 }
