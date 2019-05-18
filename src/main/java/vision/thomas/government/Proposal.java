@@ -32,9 +32,6 @@ public class Proposal {
         proposer = null;
         votedYes = null;
         votedNo = null;
-
-        p.sendMessage(plugin.prefix + "Your proposal has been cancelled.");
-
     }
 
     public String getCommand() {
