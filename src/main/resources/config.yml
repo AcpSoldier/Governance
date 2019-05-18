@@ -6,10 +6,15 @@ Settings:
   Enabled: true
   VoteSoundsForSelf: true
   VoteSoundsForAll: true
-
+  VoteTimeInSeconds: 65
+  AnnounceVoteAt:
+    - 120
+    - 60
+    - 30
+    - 10
+    - 5
 Government:
   Type: 0
   Leaders: ''
-
 Commands:
   Allowed: ''

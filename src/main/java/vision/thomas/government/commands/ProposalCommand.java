@@ -80,8 +80,8 @@ public class ProposalCommand extends SubCommand implements Listener {
                             announcement.announceProposalCancelation(proposer, voteManager.getCurrentProposal());
                         }
 
+                        proposer.sendMessage(plugin.prefix + "Your proposal has been cancelled.");
                         voteManager.getCurrentProposal().cancelProposal(proposer);
-
                     }
                     else {
                         proposer.sendMessage(plugin.prefix + "Only " + ChatColor.AQUA + "" + voteManager.getCurrentProposal().getProposer().getName() + plugin.defaultColor + " can cancel the current proposal.");
@@ -163,8 +163,6 @@ public class ProposalCommand extends SubCommand implements Listener {
                     proposal.setProposer(proposer);
                     voteManager.setCurrentProposal(proposal);
 
-                    proposer.sendMessage(plugin.prefix + proposal.getCommand());
-                    proposer.sendMessage(plugin.prefix + voteManager.getCurrentProposal().getCommand());
                     proposer.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal created successfully.");
 
                     announcement.announceProposal(proposer, proposal);
@@ -173,10 +171,14 @@ public class ProposalCommand extends SubCommand implements Listener {
                     for (Player player : creatingProposal.keySet()) {
                         proposer.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal creation canceled; " + proposal.getProposer().getName() + " created one before you.");
                     }
+
                     creatingProposal.clear();
+
+                    proposer.sendMessage("Test: " + config.voteTimeInSeconds);
+                    voteManager.startTimer();
                 }
                 else {
-                    proposer.sendMessage(plugin.prefix + "Reason too long. Try again.");
+                    proposer.sendMessage(plugin.prefix + "Reason must be short enough to fit on one line. Please try again.");
                 }
             }
 

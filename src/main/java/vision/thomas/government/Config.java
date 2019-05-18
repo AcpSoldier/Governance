@@ -19,9 +19,13 @@ public class Config {
 
     public int govType;
 
-    public List<String> govLeaders = new ArrayList<String>();
+    public int voteTimeInSeconds;
 
-    public List<String> allowedCommands = new ArrayList<String>();
+    public List<Integer> announceVoteAt = new ArrayList<>();
+
+    public List<String> govLeaders = new ArrayList<>();
+
+    public List<String> allowedCommands = new ArrayList<>();
 
     public Config(Government plugin) {
 
@@ -37,6 +41,8 @@ public class Config {
         isVoteSoundsForAll = cfg.getBoolean("Settings.VoteSoundsForAll");
         isVoteSoundsForSelf = cfg.getBoolean("Settings.VoteSoundsForSelf");
         govType = cfg.getInt("Government.Type");
+        voteTimeInSeconds = cfg.getInt("Settings.VoteTimeInSeconds");
+        announceVoteAt = cfg.getIntegerList("Settings.AnnounceVoteAt");
         govLeaders = cfg.getStringList("Government.Leaders");
         allowedCommands = cfg.getStringList("Commands.Allowed");
 
