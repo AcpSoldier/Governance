@@ -21,6 +21,12 @@ public class Config {
 
     public int voteTimeInSeconds;
 
+    public int minVotesRequired;
+
+    public int percentNeededToPass;
+
+    public boolean chatWhileCountingVotes;
+
     public List<Integer> announceVoteAt = new ArrayList<>();
 
     public List<String> govLeaders = new ArrayList<>();
@@ -42,6 +48,9 @@ public class Config {
         isVoteSoundsForSelf = cfg.getBoolean("Settings.VoteSoundsForSelf");
         govType = cfg.getInt("Government.Type");
         voteTimeInSeconds = cfg.getInt("Settings.VoteTimeInSeconds");
+        minVotesRequired = cfg.getInt("Settings.MinVotesRequired");
+        percentNeededToPass = cfg.getInt("Settings.PercentRequiredToPass");
+        chatWhileCountingVotes = cfg.getBoolean("Settings.ChatWhileCountingVotes");
         announceVoteAt = cfg.getIntegerList("Settings.AnnounceVoteAt");
         govLeaders = cfg.getStringList("Government.Leaders");
         allowedCommands = cfg.getStringList("Commands.Allowed");

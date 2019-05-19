@@ -1,13 +1,15 @@
 package vision.thomas.government;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VoteManager {
+public class VoteManager implements Listener {
 
     private Government plugin;
 
@@ -16,6 +18,8 @@ public class VoteManager {
     private static Proposal currentProposal;
 
     private static boolean voteInProgress = false;
+
+    private static boolean voteCountInProgress = false;
 
     public VoteManager(Government plugin) {
 
@@ -54,6 +58,16 @@ public class VoteManager {
         VoteManager.voteInProgress = voteInProgress;
     }
 
+    public static boolean isVoteCountInProgress() {
+
+        return voteCountInProgress;
+    }
+
+    public static void setVoteCountInProgress(boolean voteCountInProgress) {
+
+        VoteManager.voteCountInProgress = voteCountInProgress;
+    }
+
     public void startTimer() {
 
         new BukkitRunnable() {
@@ -74,10 +88,9 @@ public class VoteManager {
                 }
                 if (voteInProgress) {
                     if (time <= 0) {
-                        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                            player.sendMessage("Timer has ended.");
-                            countVotes();
-                        }
+                        setVoteCountInProgress(true);
+                        plugin.announcement.announceVoteCount();
+
                         cancel();
                     }
                     else if (announceVoteAt.contains(time)) {
@@ -92,37 +105,95 @@ public class VoteManager {
         }.runTaskTimer(plugin, 0, 20);
     }
 
-    private void countVotes() {
+    public void countVotes() {
 
-        if (currentProposal.getVotedYes().size() > currentProposal.getVotedNo().size()) {
-            plugin.announcement.announceProposalPassed();
+        new BukkitRunnable() {
 
-            Player proposer = currentProposal.getProposer();
-            boolean wasAlreadyAnOp = false;
+            public void run() {
 
-            try {
-                if (!proposer.isOp()) {
-                    proposer.setOp(true);
+                int votesYes = getCurrentProposal().getVotedYes().size();
+                int votesNo = getCurrentProposal().getVotedNo().size();
+                int totalVotes = votesYes + votesNo;
+                float percentYes = (int) Math.round(100.0 / (totalVotes) * votesYes);
+                float percentNo = (int) Math.round(100.0 / (totalVotes) * votesNo);
+
+                config.reloadConfig();
+                if (totalVotes >= config.minVotesRequired) {
+                    if (percentYes >= config.percentNeededToPass) {
+                        plugin.announcement.announceProposalResults(true, percentYes, percentNo, votesYes, votesNo, "");
+
+                        new BukkitRunnable() {
+
+                            public void run() {
+
+                                executeProposalCommand();
+                                cancel();
+                            }
+                        }.runTaskLater(plugin, 60);
+
+                    }
+                    else {
+                        finishProposal();
+                        plugin.announcement.announceProposalResults(false, percentYes, percentNo, votesYes, votesNo, "Not enough votes in the positive.");
+                    }
                 }
                 else {
-                    wasAlreadyAnOp = true;
-                }
-                plugin.getServer().dispatchCommand(proposer, currentProposal.getCommand());
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (!wasAlreadyAnOp) {
-                    proposer.setOp(false);
+                    finishProposal();
+                    plugin.announcement.announceProposalResults(false, percentYes, percentNo, votesYes, votesNo, ("Not enough people voted. Minimum required votes is set to " + config.minVotesRequired));
                 }
             }
-        }
-        else {
-            plugin.announcement.announceProposalFail();
-        }
+        }.runTaskLater(plugin, 40);
 
-        voteInProgress = false;
-        currentProposal.cancelProposal(currentProposal.getProposer());
+    }
+
+    private void finishProposal() {
+
+        new BukkitRunnable() {
+
+            public void run() {
+
+                setVoteInProgress(false);
+                currentProposal.cancelProposal(currentProposal.getProposer());
+            }
+        }.runTaskLater(plugin, 40);
+
+    }
+
+    private void executeProposalCommand() {
+
+        new BukkitRunnable() {
+
+            public void run() {
+
+                Player proposer = currentProposal.getProposer();
+                boolean wasAlreadyAnOp = false;
+
+                try {
+                    if (!proposer.isOp()) {
+                        proposer.setOp(true);
+                    }
+                    else {
+                        wasAlreadyAnOp = true;
+                    }
+                    plugin.getServer().dispatchCommand(proposer, currentProposal.getCommand());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (!wasAlreadyAnOp) {
+                        proposer.setOp(false);
+                    }
+                    finishProposal();
+                }
+            }
+        }.runTaskLater(plugin, 20);
+    }
+
+    @EventHandler
+    public void onPlayerChat(PlayerChatEvent event) {
+
+        if (isVoteCountInProgress()) {
+            event.setCancelled(true);
+        }
     }
 
 }

@@ -4,6 +4,9 @@
 #            /----------------------------------------------\
 Settings:
   Enabled: true
+  MinVotesRequired: 10
+  PercentRequiredToPass: 66
+  ChatWhileCountingVotes: false
   VoteSoundsForSelf: true
   VoteSoundsForAll: true
   VoteTimeInSeconds: 65
@@ -12,7 +15,6 @@ Settings:
     - 60
     - 30
     - 10
-    - 5
 Government:
   Type: 0
   Leaders: ''
