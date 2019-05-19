@@ -168,13 +168,12 @@ public class ProposalCommand extends SubCommand implements Listener {
                     announcement.announceProposal(proposer, proposal);
                     creatingProposal.remove(proposer);
 
+                    //NOT TESTED YET!!!
                     for (Player player : creatingProposal.keySet()) {
                         proposer.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal creation canceled; " + proposal.getProposer().getName() + " created one before you.");
                     }
 
                     creatingProposal.clear();
-
-                    proposer.sendMessage("Test: " + config.voteTimeInSeconds);
                     voteManager.startTimer();
                 }
                 else {
