@@ -86,7 +86,7 @@ public class VoteManager implements Listener {
                     announceVoteAt = config.announceVoteAt;
                     firstRun = false;
                 }
-                if (isVoteCountInProgress()) {
+                if (isVoteInProgress()) {
                     if (time <= 0) {
                         setVoteCountInProgress(true);
                         plugin.announcement.announceVoteCount();
