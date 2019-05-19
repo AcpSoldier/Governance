@@ -38,13 +38,17 @@ public class Announcement {
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Run command: " + plugin.highlightColor + "/" + proposal.getCommand()));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Reason: " + plugin.mainColor + "'" + proposal.getReason() + "'"));
 
-        TextComponent voteYesMessage = new TextComponent("                    CLICK TO VOTE YES");
+        TextComponent voteYesMessage = new TextComponent("      CLICK TO VOTE YES");
         voteYesMessage.setColor(ChatColor.GREEN);
         voteYesMessage.setBold(true);
         voteYesMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/government vote yes [reason]").create()));
         voteYesMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/government vote yes"));
 
-        TextComponent voteNoMessage = new TextComponent("                     CLICK TO VOTE NO");
+        TextComponent mediator = new TextComponent("   -   ");
+        mediator.setColor(ChatColor.WHITE);
+        mediator.setBold(true);
+
+        TextComponent voteNoMessage = new TextComponent("CLICK TO VOTE NO");
         voteNoMessage.setColor(ChatColor.RED);
         voteNoMessage.setBold(true);
         voteNoMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/government vote no [reason]").create()));
@@ -52,8 +56,7 @@ public class Announcement {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
 
-            player.spigot().sendMessage(voteYesMessage);
-            player.spigot().sendMessage(voteNoMessage);
+            player.spigot().sendMessage(voteYesMessage, mediator, voteNoMessage);
         }
 
         Bukkit.broadcastMessage(plugin.fullLine);
@@ -179,7 +182,7 @@ public class Announcement {
         if (passed) {
             Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Proposal to run the command"));
             Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + plugin.highlightColor + "/" + voteManager.getCurrentProposal().getCommand() + plugin.defaultColor + " has " + ChatColor.GREEN + "" + ChatColor.BOLD + "PASSED!"));
-            delayedAnnouncement("" + plugin.prefix + plugin.highlightColor + "Executing proposal...", 60, false);
+            delayedAnnouncement("" + plugin.prefix + plugin.highlightColor + "Executing proposal...", 40, false);
 
             for (Player player : Bukkit.getOnlinePlayers()) {
                 playSoundIfEnabled(player, Sound.BLOCK_BEACON_POWER_SELECT, 2.0F, 2.0F);
@@ -193,7 +196,10 @@ public class Announcement {
             }
         }
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Voted yes: " + ChatColor.GREEN + "" + ChatColor.BOLD + percentYes + "%" + plugin.defaultColor + " Voted no: " + ChatColor.RED + "" + ChatColor.BOLD + percentNo + "%" + plugin.defaultColor + ". Total votes: " + ChatColor.BOLD + (votesYes + votesNo + ".")));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + reasonFailed));
+
+        if (reasonFailed.length() > 1) {
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + reasonFailed));
+        }
         Bukkit.broadcastMessage(plugin.fullLine);
         voteManager.setVoteCountInProgress(false);
     }
@@ -202,6 +208,7 @@ public class Announcement {
 
         int votesYes = voteManager.getCurrentProposal().getVotedYes().size();
         int votesNo = voteManager.getCurrentProposal().getVotedNo().size();
+        int abstentions = Bukkit.getOnlinePlayers().size() - (votesYes + votesNo);
 
         Bukkit.broadcastMessage(plugin.fullLine);
         Bukkit.broadcastMessage(centeredMessage.get(plugin.prefix + plugin.defaultColor + "Counting votes..."));
@@ -213,10 +220,11 @@ public class Announcement {
 
         config.reloadConfig();
 
-        delayedAnnouncement("" + ChatColor.GREEN + ChatColor.BOLD + "Votes in favor: " + votesYes, 20, false);
-        delayedAnnouncement("" + ChatColor.RED + ChatColor.BOLD + "Votes against: " + votesNo, 40, false);
+        delayedAnnouncement("" + ChatColor.GREEN + ChatColor.BOLD + "Number of votes in favor: " + votesYes, 15, false);
+        delayedAnnouncement("" + ChatColor.RED + ChatColor.BOLD + "Number of votes against: " + votesNo, 30, false);
+        delayedAnnouncement("" + ChatColor.YELLOW + ChatColor.BOLD + "Number of abstentions: " + abstentions, 45, false);
         delayedAnnouncement("" + ChatColor.WHITE + ChatColor.BOLD + "Percentage needed to pass: " + config.percentNeededToPass + "%", 60, false);
-        delayedAnnouncement("" + ChatColor.WHITE + ChatColor.BOLD + "Minimum votes required to pass: " + config.minVotesRequired, 80, true);
+        delayedAnnouncement("" + ChatColor.WHITE + ChatColor.BOLD + "Minimum votes required to pass: " + config.minVotesRequired, 75, true);
 
     }
 

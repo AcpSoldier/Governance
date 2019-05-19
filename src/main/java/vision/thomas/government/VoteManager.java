@@ -129,7 +129,7 @@ public class VoteManager implements Listener {
                                 executeProposalCommand();
                                 cancel();
                             }
-                        }.runTaskLater(plugin, 60);
+                        }.runTaskLater(plugin, 40);
 
                     }
                     else {
