@@ -61,30 +61,36 @@ public class ProposalCommand extends SubCommand implements Listener {
 
                 if (voteManager.isVoteInProgress()) {
 
-                    if (voteManager.getCurrentProposal().getProposer().getName().equalsIgnoreCase(proposer.getName()) || proposer.isOp()) {
+                    if (!voteManager.isVoteCountInProgress()) {
 
-                        voteManager.setVoteInProgress(false);
-                        if (args.length > 1) {
+                        if (voteManager.getCurrentProposal().getProposer().getName().equalsIgnoreCase(proposer.getName()) || proposer.isOp()) {
 
-                            String reason = "";
-                            for (int i = 0; i < args.length; i++) {
-                                if (i != 0) {
-                                    reason += args[i] + " ";
+                            voteManager.setVoteInProgress(false);
+                            if (args.length > 1) {
+
+                                String reason = "";
+                                for (int i = 0; i < args.length; i++) {
+                                    if (i != 0) {
+                                        reason += args[i] + " ";
+                                    }
                                 }
-                            }
-                            reason = reason.substring(0, reason.length() - 1);
+                                reason = reason.substring(0, reason.length() - 1);
 
-                            announcement.announceProposalCancelation(proposer, voteManager.getCurrentProposal(), reason);
+                                announcement.announceProposalCancelation(proposer, voteManager.getCurrentProposal(), reason);
+                            }
+                            else {
+                                announcement.announceProposalCancelation(proposer, voteManager.getCurrentProposal());
+                            }
+
+                            proposer.sendMessage(plugin.prefix + "Your proposal has been cancelled.");
+                            voteManager.getCurrentProposal().cancelProposal(proposer);
                         }
                         else {
-                            announcement.announceProposalCancelation(proposer, voteManager.getCurrentProposal());
+                            proposer.sendMessage(plugin.prefix + "Only " + ChatColor.AQUA + "" + voteManager.getCurrentProposal().getProposer().getName() + plugin.defaultColor + " can cancel the current proposal.");
                         }
-
-                        proposer.sendMessage(plugin.prefix + "Your proposal has been cancelled.");
-                        voteManager.getCurrentProposal().cancelProposal(proposer);
                     }
                     else {
-                        proposer.sendMessage(plugin.prefix + "Only " + ChatColor.AQUA + "" + voteManager.getCurrentProposal().getProposer().getName() + plugin.defaultColor + " can cancel the current proposal.");
+                        proposer.sendMessage(plugin.prefix + ChatColor.BOLD + "It's too late to cancel this proposal!");
                     }
                 }
                 else if (creatingProposal.containsKey(proposer)) {
