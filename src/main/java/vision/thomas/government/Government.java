@@ -30,6 +30,7 @@ public final class Government extends JavaPlugin {
         config.setup();
 
         ProposalCommand proposalCommand = new ProposalCommand(this);
+        VoteManager voteManager = new VoteManager(this);
 
         CommandExec cmdEx = new CommandExec(this);
         cmdEx.register(new ConfigCommand(this));
@@ -37,6 +38,8 @@ public final class Government extends JavaPlugin {
         cmdEx.register(proposalCommand);
 
         getServer().getPluginManager().registerEvents(proposalCommand, this);
+        getServer().getPluginManager().registerEvents(voteManager, this);
+
     }
 
     @Override
