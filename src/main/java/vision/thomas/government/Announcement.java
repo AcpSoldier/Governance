@@ -177,7 +177,8 @@ public class Announcement {
 
         Bukkit.broadcastMessage(plugin.fullLine);
         if (passed) {
-            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Proposal to run command: " + plugin.highlightColor + "/" + voteManager.getCurrentProposal().getCommand() + plugin.defaultColor + " has " + ChatColor.GREEN + "" + ChatColor.BOLD + "PASSED!"));
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Proposal to run the command"));
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + plugin.highlightColor + "/" + voteManager.getCurrentProposal().getCommand() + plugin.defaultColor + " has " + ChatColor.GREEN + "" + ChatColor.BOLD + "PASSED!"));
             delayedAnnouncement("" + plugin.prefix + plugin.highlightColor + "Executing proposal...", 60, false);
 
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -185,7 +186,8 @@ public class Announcement {
             }
         }
         else {
-            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Proposal to run command: " + plugin.highlightColor + "/" + voteManager.getCurrentProposal().getCommand() + plugin.defaultColor + " has " + ChatColor.RED + "" + ChatColor.BOLD + "FAILED!"));
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Proposal to run the command"));
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + plugin.highlightColor + "/" + voteManager.getCurrentProposal().getCommand() + plugin.defaultColor + " has " + ChatColor.RED + "" + ChatColor.BOLD + "FAILED!"));
             for (Player player : Bukkit.getOnlinePlayers()) {
                 playSoundIfEnabled(player, Sound.BLOCK_BEACON_DEACTIVATE, 2.0F, 2.0F);
             }
