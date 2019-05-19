@@ -17,7 +17,7 @@ public class VoteManager implements Listener {
 
     private static Proposal currentProposal;
 
-    private static boolean voteInProgress = false;
+    private static boolean isVoteInProgress = false;
 
     private static boolean voteCountInProgress = false;
 
@@ -50,12 +50,12 @@ public class VoteManager implements Listener {
 
     public static boolean isVoteInProgress() {
 
-        return voteInProgress;
+        return isVoteInProgress;
     }
 
     public static void setVoteInProgress(boolean voteInProgress) {
 
-        VoteManager.voteInProgress = voteInProgress;
+        VoteManager.isVoteInProgress = voteInProgress;
     }
 
     public static boolean isVoteCountInProgress() {
@@ -86,7 +86,7 @@ public class VoteManager implements Listener {
                     announceVoteAt = config.announceVoteAt;
                     firstRun = false;
                 }
-                if (voteInProgress) {
+                if (isVoteCountInProgress()) {
                     if (time <= 0) {
                         setVoteCountInProgress(true);
                         plugin.announcement.announceVoteCount();
