@@ -41,8 +41,8 @@ public class Announcement {
         TextComponent voteYesMessage = new TextComponent("      CLICK TO VOTE YES");
         voteYesMessage.setColor(ChatColor.GREEN);
         voteYesMessage.setBold(true);
-        voteYesMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/government vote yes [reason]").create()));
-        voteYesMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/government vote yes"));
+        voteYesMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/gov vote yes [reason]").create()));
+        voteYesMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/gov vote yes"));
 
         TextComponent mediator = new TextComponent("   -   ");
         mediator.setColor(ChatColor.WHITE);
@@ -51,8 +51,8 @@ public class Announcement {
         TextComponent voteNoMessage = new TextComponent("CLICK TO VOTE NO");
         voteNoMessage.setColor(ChatColor.RED);
         voteNoMessage.setBold(true);
-        voteNoMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/government vote no [reason]").create()));
-        voteNoMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/government vote no"));
+        voteNoMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/gov vote no [reason]").create()));
+        voteNoMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/gov vote no"));
 
         for (Player player : Bukkit.getOnlinePlayers()) {
 
@@ -73,13 +73,13 @@ public class Announcement {
         voteYesMessage.setColor(ChatColor.GREEN);
         voteYesMessage.setBold(true);
         voteYesMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Vote to make " + runner.getName() + " the new " + positionType + ".").create()));
-        voteYesMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/government vote yes"));
+        voteYesMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/gov vote yes"));
 
         TextComponent voteNoMessage = new TextComponent(centeredMessage.get("CLICK TO VOTE NO"));
         voteNoMessage.setColor(ChatColor.RED);
         voteNoMessage.setBold(true);
         voteNoMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Vote to make " + runner.getName()).create()));
-        voteNoMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/government vote no"));
+        voteNoMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/gov vote no"));
 
         if (competition) {
 
