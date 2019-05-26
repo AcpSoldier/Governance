@@ -17,7 +17,6 @@ public class GovernmentManager {
     public String setGovType(int newType) {
 
         config.reloadConfig();
-
         if (newType != getGovType()) {
 
             config.govType = newType;
@@ -33,6 +32,7 @@ public class GovernmentManager {
 
     public int getGovType() {
 
+        config.reloadConfig();
         return config.govType;
     }
 
@@ -67,6 +67,18 @@ public class GovernmentManager {
         }
         else {
             return plugin.prefix + oldLeader + " is not a " + getTypeOfGovLeader() + " and can't be removed.";
+        }
+    }
+
+    public boolean govLeadersContains(String leaderName) {
+
+        config.reloadConfig();
+
+        if (config.govLeaders.contains(getGovLeaderId(leaderName))) {
+            return true;
+        }
+        else {
+            return false;
         }
     }
 
