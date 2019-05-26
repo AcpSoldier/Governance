@@ -38,6 +38,10 @@ public class Announcement {
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Run command: " + plugin.highlightColor + "/" + proposal.getCommand()));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Reason: " + plugin.mainColor + "'" + proposal.getReason() + "'"));
 
+        if (governmentManager.getGovType() == 1) {
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "You must be a " + governmentManager.getTypeOfGovLeader() + " to vote."));
+        }
+
         TextComponent voteYesMessage = new TextComponent("      CLICK TO VOTE YES");
         voteYesMessage.setColor(ChatColor.GREEN);
         voteYesMessage.setBold(true);
@@ -210,6 +214,11 @@ public class Announcement {
         int votesNo = voteManager.getCurrentProposal().getVotedNo().size();
         int abstentions = Bukkit.getOnlinePlayers().size() - (votesYes + votesNo);
 
+        if (governmentManager.getGovType() == 1) {
+            config.reloadConfig();
+            abstentions = config.govLeaders.size() - (votesYes + votesNo);
+        }
+
         Bukkit.broadcastMessage(plugin.fullLine);
         Bukkit.broadcastMessage(centeredMessage.get(plugin.prefix + plugin.defaultColor + "Counting votes..."));
         Bukkit.broadcastMessage(plugin.fullLine);
@@ -246,6 +255,22 @@ public class Announcement {
                 cancel();
             }
         }.runTaskLater(plugin, delay);
+    }
+
+    public void announceDictatedProposal(Proposal proposal) {
+
+        Bukkit.broadcastMessage(plugin.fullLine);
+
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + voteManager.getCurrentProposal().getProposer().getDisplayName() + " (Dictator) has issued a decree"));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Run command: " + plugin.highlightColor + "/" + proposal.getCommand()));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Reason: " + plugin.mainColor + "'" + proposal.getReason() + "'"));
+        delayedAnnouncement("" + plugin.prefix + plugin.highlightColor + "Executing proposal...", 40, false);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            playSoundIfEnabled(player, Sound.BLOCK_BEACON_POWER_SELECT, 2.0F, 2.0F);
+        }
+        Bukkit.broadcastMessage(plugin.fullLine);
+
     }
 
 }

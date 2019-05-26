@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vision.thomas.government.Announcement;
 import vision.thomas.government.Government;
+import vision.thomas.government.GovernmentManager;
 import vision.thomas.government.VoteManager;
 import vision.thomas.government.commands.helpers.SubCommand;
 
@@ -15,11 +16,14 @@ public class VoteCommand extends SubCommand {
 
     private Announcement announcement;
 
+    private GovernmentManager governmentManager;
+
     public VoteCommand(Government plugin) {
 
         super(plugin, plugin.getName().toLowerCase(), "vote", "[yes | no]", "Allows players to vote on an active proposal or election.");
         this.plugin = plugin;
         voteManager = new VoteManager(plugin);
+        governmentManager = new GovernmentManager(plugin);
         announcement = new Announcement(plugin);
     }
 
@@ -34,22 +38,21 @@ public class VoteCommand extends SubCommand {
 
                     if (!voteManager.getCurrentProposal().getVotedNo().contains(voter) && !voteManager.getCurrentProposal().getVotedYes().contains(voter)) {
                         if (args[0].equalsIgnoreCase("yes")) {
-                            voteManager.castVote(voter, voteManager.getCurrentProposal(), args[0]);
 
-                            if (args.length > 1) {
+                            switch (governmentManager.getGovType()) {
 
-                                String reason = "";
-                                for (int i = 0; i < args.length; i++) {
-                                    if (i != 0) {
-                                        reason += args[i] + " ";
+                                default: // Direct Democracy
+                                    castVote(voter, args);
+                                    break;
+
+                                case 1: // Republic
+                                    if (governmentManager.govLeadersContains(voter.getDisplayName())) {
+                                        castVote(voter, args);
                                     }
-                                }
-                                reason = reason.substring(0, reason.length() - 1);
-
-                                announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0], reason);
-                            }
-                            else {
-                                announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0]);
+                                    else {
+                                        voter.sendMessage(plugin.prefix + "In a " + governmentManager.getGovName() + ", you must be a " + governmentManager.getTypeOfGovLeader() + " to vote.");
+                                    }
+                                    break;
                             }
                         }
                         else if (args[0].equalsIgnoreCase("no")) {
@@ -94,6 +97,27 @@ public class VoteCommand extends SubCommand {
             sender.sendMessage(plugin.prefix + "Only players can vote on proposals, sorry console : ( ");
         }
         return true;
+    }
+
+    private void castVote(Player voter, String[] args) {
+
+        voteManager.castVote(voter, voteManager.getCurrentProposal(), args[0]);
+
+        if (args.length > 1) {
+
+            String reason = "";
+            for (int i = 0; i < args.length; i++) {
+                if (i != 0) {
+                    reason += args[i] + " ";
+                }
+            }
+            reason = reason.substring(0, reason.length() - 1);
+
+            announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0], reason);
+        }
+        else {
+            announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0]);
+        }
     }
 
 }

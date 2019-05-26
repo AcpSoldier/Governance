@@ -126,7 +126,7 @@ public class VoteManager implements Listener {
 
                             public void run() {
 
-                                executeProposalCommand();
+                                executeProposalCommand(20);
                                 cancel();
                             }
                         }.runTaskLater(plugin, 40);
@@ -159,7 +159,7 @@ public class VoteManager implements Listener {
 
     }
 
-    private void executeProposalCommand() {
+    public void executeProposalCommand(int delay) {
 
         new BukkitRunnable() {
 
@@ -185,7 +185,7 @@ public class VoteManager implements Listener {
                     finishProposal();
                 }
             }
-        }.runTaskLater(plugin, 20);
+        }.runTaskLater(plugin, delay);
     }
 
     @EventHandler
