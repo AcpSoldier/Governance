@@ -1,10 +1,13 @@
 package vision.thomas.government;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import vision.thomas.government.accounts.Account;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -140,7 +143,9 @@ public class VoteManager implements Listener {
                                             govManager.addGovLeader(currentProposal.getNominated().getUniqueId().toString());
                                         }
                                     }
-                                    finishProposal();
+                                    distributeRespect(true);
+                                    cancelProposal();
+
                                 }
                                 else {
                                     executeProposalCommand(20);
@@ -151,30 +156,33 @@ public class VoteManager implements Listener {
 
                     }
                     else {
-                        finishProposal();
+
                         if (election) {
                             plugin.announcement.announceElectionResults(false, percentYes, percentNo, votesYes, votesNo, "Not enough votes in the positive.");
                         }
                         else {
                             plugin.announcement.announceProposalResults(false, percentYes, percentNo, votesYes, votesNo, "Not enough votes in the positive.");
                         }
+                        distributeRespect(false);
+                        cancelProposal();
                     }
                 }
                 else {
-                    finishProposal();
                     if (election) {
                         plugin.announcement.announceElectionResults(false, percentYes, percentNo, votesYes, votesNo, ("Not enough people voted. Minimum required votes is set to " + config.getMinVotesRequired()));
                     }
                     else {
                         plugin.announcement.announceProposalResults(false, percentYes, percentNo, votesYes, votesNo, ("Not enough people voted. Minimum required votes is set to " + config.getMinVotesRequired()));
                     }
+                    distributeRespect(false);
+                    cancelProposal();
                 }
             }
         }.runTaskLater(plugin, 40);
 
     }
 
-    private void finishProposal() {
+    private void cancelProposal() {
 
         new BukkitRunnable() {
 
@@ -185,6 +193,59 @@ public class VoteManager implements Listener {
             }
         }.runTaskLater(plugin, 40);
 
+    }
+
+    private void distributeRespect(boolean passed) {
+
+        int votesYes = getCurrentProposal().getVotedYes().size();
+        int votesNo = getCurrentProposal().getVotedNo().size();
+        int totalVotes = votesYes + votesNo;
+        float percentYes = (int) Math.round(100.0 / (totalVotes) * votesYes);
+        float percentNo = (int) Math.round(100.0 / (totalVotes) * votesNo);
+
+        if (passed) {
+            for (Player votedYesPlayer : currentProposal.getVotedYes()) {
+                if (votedYesPlayer != currentProposal.getProposer() && votedYesPlayer.isOnline()) {
+
+                    votedYesPlayer.playSound(votedYesPlayer.getLocation(), Sound.BLOCK_ANVIL_USE, 2.0F, 2.0F);
+
+                    Account votedYesAccount = plugin.getAccountManager().getAccount(votedYesPlayer.getUniqueId());
+                    plugin.getAccountManager().incrementRespect(votedYesAccount, 1);
+                    votedYesPlayer.sendMessage(plugin.prefix + ChatColor.GREEN + "" + ChatColor.BOLD + "+1 Respect Point" + plugin.defaultColor + " for voting in the interest of the majority.");
+                }
+            }
+
+            if (currentProposal.getProposer().isOnline()) {
+
+                currentProposal.getProposer().playSound(currentProposal.getProposer().getLocation(), Sound.BLOCK_ANVIL_USE, 2.0F, 2.0F);
+
+                Account proposerAccount = plugin.getAccountManager().getAccount(currentProposal.getProposer().getUniqueId());
+                plugin.getAccountManager().incrementRespect(proposerAccount, 3);
+                currentProposal.getProposer().sendMessage(plugin.prefix + ChatColor.GREEN + "" + ChatColor.BOLD + "+3 Respect Points" + plugin.defaultColor + " for passing a proposal.");
+            }
+
+            if (currentProposal.getNominated().isOnline()) {
+
+                currentProposal.getNominated().playSound(currentProposal.getProposer().getLocation(), Sound.BLOCK_ANVIL_USE, 2.0F, 2.0F);
+
+                Account proposerAccount = plugin.getAccountManager().getAccount(currentProposal.getProposer().getUniqueId());
+                plugin.getAccountManager().incrementRespect(proposerAccount, 3);
+                currentProposal.getNominated().sendMessage(plugin.prefix + ChatColor.GREEN + "" + ChatColor.BOLD + "+5 Respect Points" + plugin.defaultColor + " for being elected by the majority.");
+            }
+
+        }
+        else {
+            if (percentNo > 50) {
+                if (currentProposal.getProposer().isOnline()) {
+                    currentProposal.getProposer().playSound(currentProposal.getProposer().getLocation(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 2.0F, 2.0F);
+
+                    Account proposerAccount = plugin.getAccountManager().getAccount(currentProposal.getProposer().getUniqueId());
+                    plugin.getAccountManager().incrementRespect(proposerAccount, 3);
+                    currentProposal.getProposer().sendMessage(plugin.prefix + ChatColor.RED + "" + ChatColor.BOLD + "-3 Respect Points" + plugin.defaultColor + " for proposing an unpopular vote.");
+                }
+
+            }
+        }
     }
 
     public void executeProposalCommand(int delay) {
@@ -210,7 +271,8 @@ public class VoteManager implements Listener {
                     if (!wasAlreadyAnOp) {
                         proposer.setOp(false);
                     }
-                    finishProposal();
+                    distributeRespect(true);
+                    cancelProposal();
                 }
             }
         }.runTaskLater(plugin, delay);
