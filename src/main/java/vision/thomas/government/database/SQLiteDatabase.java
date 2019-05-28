@@ -31,7 +31,7 @@ public class SQLiteDatabase {
         }
 
         if (open()) {
-            Bukkit.getLogger().info("[Governance]: Opening connection to player database...");
+            Bukkit.getLogger().info("[Governance] Opening connection to player database...");
         }
     }
 

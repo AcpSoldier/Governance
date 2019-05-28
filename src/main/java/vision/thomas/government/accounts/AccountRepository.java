@@ -53,7 +53,7 @@ public class AccountRepository {
                         return rs.getInt(1);
                     }
                     else {
-                        Bukkit.getLogger().warning("[Governance]: Error while inserting account. This should not happen.");
+                        Bukkit.getLogger().warning("[Governance] Error while inserting account. This should not happen.");
                         return null;
                     }
                 }
