@@ -10,6 +10,7 @@ import vision.thomas.government.commands.helpers.CommandExec;
 import vision.thomas.government.database.SQLiteDatabase;
 
 import java.io.File;
+import java.sql.SQLException;
 
 public final class Government extends JavaPlugin {
 
@@ -20,8 +21,6 @@ public final class Government extends JavaPlugin {
     public Config config;
 
     private SQLiteDatabase database;
-
-
 
     private AccountManager accountManager;
 
@@ -42,7 +41,18 @@ public final class Government extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Shutdown logic
+        try {
+            if (database.getConnection() != null && !database.getConnection().isClosed()) {
+                try {
+                    System.out.println("Closing DB connection...");
+                    database.getConnection().close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public SQLiteDatabase getDatabase() {
@@ -54,4 +64,5 @@ public final class Government extends JavaPlugin {
 
         return accountManager;
     }
+
 }
