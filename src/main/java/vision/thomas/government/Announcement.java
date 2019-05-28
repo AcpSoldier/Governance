@@ -81,8 +81,7 @@ public class Announcement {
 
         Bukkit.broadcastMessage(plugin.fullLine);
         Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + proposer.getDisplayName() + plugin.highlightColor + "[" + proposerAccount.getRespect() + "]" + plugin.mainColor + " has nominated " + plugin.highlightColor + nominated.getDisplayName() + plugin.mainColor + " to be a " + governmentManager.getTypeOfGovLeader() + "!"));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Current amount of " + governmentManager.getTypeOfGovLeader() + "s: " + config.getGovLeaders().size() + "."));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Maximum amount of " + governmentManager.getTypeOfGovLeader() + "s: " + config.getMaxLeaders() + "."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + governmentManager.getTypeOfGovLeader() + " count is currently " + config.getGovLeaders().size() + "/" + config.getMaxLeaders() + " (" + (config.getMaxLeaders() - config.getGovLeaders().size()) + " slots available)."));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "If elected, " + nominated.getDisplayName() + " will not replace any current " + governmentManager.getTypeOfGovLeader() + "s."));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + nominated.getDisplayName() + plugin.highlightColor + "'s Respect Level: " + nominatedAccount.getRespect() + "."));
 
@@ -119,8 +118,7 @@ public class Announcement {
 
         Bukkit.broadcastMessage(plugin.fullLine);
         Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + proposer.getDisplayName() + plugin.highlightColor + "[" + proposerAccount.getRespect() + "]" + plugin.mainColor + " has nominated " + plugin.highlightColor + nominated.getDisplayName() + plugin.mainColor + " to be a " + governmentManager.getTypeOfGovLeader() + "!"));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Current amount of " + governmentManager.getTypeOfGovLeader() + "s: " + config.getGovLeaders().size() + "."));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Maximum amount of " + governmentManager.getTypeOfGovLeader() + "s: " + config.getMaxLeaders() + "."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + governmentManager.getTypeOfGovLeader() + " count is currently " + config.getGovLeaders().size() + "/" + config.getMaxLeaders() + " (" + (config.getMaxLeaders() - config.getGovLeaders().size()) + " slots available)."));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + "If elected, " + nominated.getDisplayName() + " will replace " + competitor.getDisplayName() + "."));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + nominated.getDisplayName() + plugin.highlightColor + "'s Respect Level: " + nominatedAccount.getRespect() + plugin.defaultColor + "."));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + competitor.getDisplayName() + plugin.highlightColor + "'s Respect Level: " + competitorAccount.getRespect() + plugin.defaultColor + "."));
@@ -421,6 +419,20 @@ public class Announcement {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             playSoundIfEnabled(player, Sound.BLOCK_WOODEN_PRESSURE_PLATE_CLICK_ON, 2.0F, 2.0F);
+        }
+    }
+
+    public void announceResignation(Player resigned) {
+
+        Account resignedAccount = plugin.getAccountManager().getAccount(resigned.getUniqueId());
+
+        Bukkit.broadcastMessage(plugin.fullLine);
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + resigned.getDisplayName() + plugin.highlightColor + "[" + resignedAccount.getRespect() + "]" + plugin.mainColor + " has resigned from office!"));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + governmentManager.getTypeOfGovLeader() + " count is now " + config.getGovLeaders().size() + "/" + config.getMaxLeaders() + " (" + (config.getMaxLeaders() - config.getGovLeaders().size()) + " slots available)."));
+        Bukkit.broadcastMessage(plugin.fullLine);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            playSoundIfEnabled(player, Sound.BLOCK_BEACON_DEACTIVATE, 2.0F, 2.0F);
         }
     }
 
