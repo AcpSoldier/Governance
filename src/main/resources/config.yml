@@ -18,5 +18,8 @@ Settings:
 Government:
   Type: 0
   Leaders: ''
+  MaxLeaders: 5
+  MinTermLengthInMinutes: 30
+  MaxTermLengthInMinutes: 180
 Commands:
   Allowed: ''

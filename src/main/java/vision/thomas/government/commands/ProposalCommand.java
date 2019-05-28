@@ -11,9 +11,6 @@ import vision.thomas.government.*;
 import vision.thomas.government.commands.helpers.CenteredMessage;
 import vision.thomas.government.commands.helpers.SubCommand;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ProposalCommand extends SubCommand implements Listener {
 
     private Government plugin;
@@ -27,8 +24,6 @@ public class ProposalCommand extends SubCommand implements Listener {
     private CenteredMessage centeredMessage = new CenteredMessage();
 
     private Config config;
-
-    private Map<Player, String> creatingProposal = new HashMap<>();
 
     public ProposalCommand(Government plugin) {
 
@@ -49,7 +44,7 @@ public class ProposalCommand extends SubCommand implements Listener {
 
             if (args[0].equalsIgnoreCase("create")) {
 
-                switch (governmentManager.getGovType()) {
+                switch (config.getGovType()) {
 
                     default: // Direct Democracy
                         createProposal(proposer);
@@ -75,14 +70,14 @@ public class ProposalCommand extends SubCommand implements Listener {
             }
             else if (args[0].equalsIgnoreCase("cancel")) {
 
-                switch (governmentManager.getGovType()) {
+                switch (config.getGovType()) {
 
                     default: // Direct Democracy
                         cancelProposal(proposer, args);
                         break;
 
                     case 1: // Republic
-                        if (governmentManager.govLeadersContains(proposer.getDisplayName())) {
+                        if (governmentManager.govLeadersContains(proposer.getDisplayName()) || proposer.isOp()) {
                             cancelProposal(proposer, args);
                         }
                         else {
@@ -90,7 +85,7 @@ public class ProposalCommand extends SubCommand implements Listener {
                         }
                         break;
                     case 2: // Dictatorship
-                        if (governmentManager.govLeadersContains(proposer.getDisplayName())) {
+                        if (governmentManager.govLeadersContains(proposer.getDisplayName()) || proposer.isOp()) {
                             cancelProposal(proposer, args);
                         }
                         else {
@@ -119,19 +114,26 @@ public class ProposalCommand extends SubCommand implements Listener {
     @EventHandler
     public void onPlayerChat(PlayerChatEvent event) {
 
-        if (creatingProposal.containsKey(event.getPlayer())) {
+        if (voteManager.creatingProposal.containsKey(event.getPlayer())) {
+
+            event.setCancelled(true);
+
+            // Un-tested. The idea is that if for some reason, if a player is stuck in proposal creation mode (or election?), this will clear them if a vote is already in progress.
+            if (voteManager.isVoteInProgress()) {
+                voteManager.creatingProposal.clear();
+                event.setCancelled(false);
+            }
 
             Player proposer = event.getPlayer();
 
-            if (creatingProposal.get(proposer) == null) {
+            if (voteManager.creatingProposal.get(proposer) == null) {
 
-                config.reloadConfig();
                 boolean commandExists = false;
 
-                for (int i = 0; i < config.allowedCommands.size(); i++) {
-                    if (event.getMessage().toLowerCase().contains(config.allowedCommands.get(i))) {
+                for (int i = 0; i < config.getAllowedCommands().size(); i++) {
+                    if (event.getMessage().toLowerCase().contains(config.getAllowedCommands().get(i))) {
 
-                        creatingProposal.replace(proposer, event.getMessage());
+                        voteManager.creatingProposal.replace(proposer, event.getMessage());
                         proposer.playSound(proposer.getLocation(), Sound.BLOCK_WOODEN_PRESSURE_PLATE_CLICK_ON, 2.0F, 2F);
 
                         proposer.sendMessage(plugin.prefix + "If your proposal succeeds, the console will run the command " + plugin.highlightColor + "/" + event.getMessage() + ".");
@@ -149,44 +151,41 @@ public class ProposalCommand extends SubCommand implements Listener {
                 }
             }
 
-            else if (creatingProposal.get(proposer) != null) {
+            else if (voteManager.creatingProposal.get(proposer) != null) {
 
                 if (centeredMessage.getMessagePxlSize(event.getMessage()) < centeredMessage.MAX_PX) {
 
                     voteManager.setVoteInProgress(true);
                     Proposal proposal = new Proposal(plugin);
-                    proposal.setCommand(creatingProposal.get(proposer));
+                    proposal.setCommand("/" + voteManager.creatingProposal.get(proposer));
                     proposal.setReason(event.getMessage());
                     proposal.setProposer(proposer);
                     voteManager.setCurrentProposal(proposal);
 
-                    if (governmentManager.getGovType() != 2) {
+                    if (config.getGovType() != 2) {
 
                         proposer.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal created successfully.");
 
                         announcement.announceProposal(proposer, proposal);
-                        creatingProposal.remove(proposer);
+                        voteManager.creatingProposal.remove(proposer);
 
-                        //NOT TESTED YET!!!
-                        for (Player player : creatingProposal.keySet()) {
+                        for (Player player : voteManager.creatingProposal.keySet()) {
                             player.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal creation canceled; " + proposal.getProposer().getName() + " created one before you.");
                         }
 
-                        creatingProposal.clear();
-                        voteManager.startTimer();
+                        voteManager.creatingProposal.clear();
+                        voteManager.startTimer(false);
                     }
                     else {
-
                         announcement.announceDictatedProposal(proposal);
                         voteManager.executeProposalCommand(60);
-                        creatingProposal.remove(proposer);
+                        voteManager.creatingProposal.remove(proposer);
 
-                        //NOT TESTED YET!!!
-                        for (Player player : creatingProposal.keySet()) {
+                        for (Player player : voteManager.creatingProposal.keySet()) {
                             player.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal creation canceled; " + proposal.getProposer().getName() + " created one before you.");
                         }
 
-                        creatingProposal.clear();
+                        voteManager.creatingProposal.clear();
                     }
 
                 }
@@ -195,7 +194,6 @@ public class ProposalCommand extends SubCommand implements Listener {
                 }
             }
 
-            event.setCancelled(true);
         }
     }
 
@@ -203,7 +201,7 @@ public class ProposalCommand extends SubCommand implements Listener {
 
         if (!voteManager.isVoteInProgress()) {
 
-            creatingProposal.put(proposer, null);
+            voteManager.creatingProposal.put(proposer, null);
             proposer.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal creation started.");
             proposer.playSound(proposer.getLocation(), Sound.BLOCK_WOODEN_PRESSURE_PLATE_CLICK_ON, 2.0F, 2F);
             proposer.sendMessage(plugin.prefix + "In a new chat message, please type exactly what command you are proposing to run but " + ChatColor.RED + "WITHOUT A '/' at the beginning.");
@@ -250,9 +248,9 @@ public class ProposalCommand extends SubCommand implements Listener {
                 proposer.sendMessage(plugin.prefix + ChatColor.BOLD + "It's too late to cancel this proposal!");
             }
         }
-        else if (creatingProposal.containsKey(proposer)) {
+        else if (voteManager.creatingProposal.containsKey(proposer)) {
 
-            creatingProposal.remove(proposer);
+            voteManager.creatingProposal.remove(proposer);
             proposer.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal creation canceled. ");
             proposer.playSound(proposer.getLocation(), Sound.BLOCK_WOODEN_PRESSURE_PLATE_CLICK_ON, 2.0F, 0.5F);
         }
@@ -266,9 +264,8 @@ public class ProposalCommand extends SubCommand implements Listener {
 
         proposer.sendMessage(plugin.prefix + "Here is a list of the allowed proposal commands:");
 
-        config.reloadConfig();
-        for (int i = 0; i < config.allowedCommands.size(); i++) {
-            proposer.sendMessage(plugin.mainColor + "/" + config.allowedCommands.get(i));
+        for (int i = 0; i < config.getAllowedCommands().size(); i++) {
+            proposer.sendMessage(plugin.mainColor + "/" + config.getAllowedCommands().get(i));
         }
 
         proposer.sendMessage(plugin.prefix + "To add a new command, use '/gov config addcommand <full command arguments>.");

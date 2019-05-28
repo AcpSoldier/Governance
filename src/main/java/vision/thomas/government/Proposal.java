@@ -14,6 +14,10 @@ public class Proposal {
 
     private Player proposer;
 
+    private Player nominated;
+
+    private Player competitor;
+
     private ArrayList<Player> votedYes;
 
     private ArrayList<Player> votedNo;
@@ -32,6 +36,9 @@ public class Proposal {
         proposer = null;
         votedYes = null;
         votedNo = null;
+
+        nominated = null;
+        competitor = null;
     }
 
     public String getCommand() {
@@ -72,6 +79,26 @@ public class Proposal {
     public void setReason(String reason) {
 
         this.reason = reason;
+    }
+
+    public Player getNominated() {
+
+        return nominated;
+    }
+
+    public void setNominated(Player nominated) {
+
+        this.nominated = nominated;
+    }
+
+    public Player getCompetitor() {
+
+        return competitor;
+    }
+
+    public void setCompetitor(Player competitor) {
+
+        this.competitor = competitor;
     }
 
 }

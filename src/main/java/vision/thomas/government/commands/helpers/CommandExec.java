@@ -63,7 +63,7 @@ public class CommandExec implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         // Denies all attempts to run commands while the plugin is disabled EXCEPT for the "enable" command.
-        if (!config.isPluginEnabled) {
+        if (!config.isPluginEnabled()) {
             if (args.length == 2) {
                 if (args[1].equalsIgnoreCase("enable")) {
 

@@ -31,7 +31,7 @@ public class ConfigCommand extends SubCommand {
         if (args.length > 0) {
 
             if (args[0].equalsIgnoreCase("disable")) {
-                if (!config.isPluginEnabled) {
+                if (!config.isPluginEnabled()) {
                     sender.sendMessage(prefix + "The plugin is already disabled.");
                 }
                 else {
@@ -41,7 +41,7 @@ public class ConfigCommand extends SubCommand {
             }
 
             else if (args[0].equalsIgnoreCase("enable")) {
-                if (config.isPluginEnabled) {
+                if (config.isPluginEnabled()) {
                     sender.sendMessage(prefix + "The plugin is already enabled.");
                 }
                 else {
@@ -60,7 +60,16 @@ public class ConfigCommand extends SubCommand {
             else if (args[0].equalsIgnoreCase("addLeader")) {
 
                 if (args.length > 1) {
-                    sender.sendMessage(govManager.addGovLeader(args[1]));
+
+                    String newLeader = args[1];
+
+                    if (!config.getGovLeaders().contains(govManager.getGovLeaderId(newLeader))) {
+                        govManager.addGovLeader(govManager.getGovLeaderId(newLeader));
+                        sender.sendMessage(plugin.prefix + newLeader + " is now a " + govManager.getTypeOfGovLeader() + ".");
+                    }
+                    else {
+                        sender.sendMessage(plugin.prefix + newLeader + " is already " + govManager.getTypeOfGovLeader() + ".");
+                    }
                 }
                 else {
                     sender.sendMessage(prefix + "Please specify what player you would like to become a " + govManager.getTypeOfGovLeader() + ".");
@@ -70,7 +79,17 @@ public class ConfigCommand extends SubCommand {
             else if (args[0].equalsIgnoreCase("removeLeader")) {
 
                 if (args.length > 1) {
-                    sender.sendMessage(govManager.removeGovLeader(args[1]));
+
+                    String oldLeader = args[1];
+
+                    if (config.getGovLeaders().contains(govManager.getGovLeaderId(oldLeader))) {
+
+                        govManager.removeGovLeader(govManager.getGovLeaderId(oldLeader));
+                        sender.sendMessage(plugin.prefix + oldLeader + " is no longer a " + govManager.getTypeOfGovLeader() + ".");
+                    }
+                    else {
+                        sender.sendMessage(plugin.prefix + oldLeader + " is not a " + govManager.getTypeOfGovLeader() + " and can't be removed.");
+                    }
                 }
                 else {
                     sender.sendMessage(prefix + "Please specify what player you would no longer like to be a " + govManager.getTypeOfGovLeader() + ".");
@@ -99,7 +118,14 @@ public class ConfigCommand extends SubCommand {
                     }
                     command = command.substring(0, command.length() - 1);
 
-                    sender.sendMessage(govManager.addAllowedCommand(command));
+                    if (!config.getAllowedCommands().contains(command.toLowerCase())) {
+
+                        govManager.addAllowedCommand(command);
+                        sender.sendMessage(plugin.prefix + "Proposals can now be created to run " + plugin.mainColor + "/" + command + ".");
+                    }
+                    else {
+                        sender.sendMessage(plugin.prefix + "/" + command + " is already an allowed command.");
+                    }
                 }
                 else {
                     sender.sendMessage(prefix + "Please specify what command you would like to add as a proposal.");
@@ -117,7 +143,14 @@ public class ConfigCommand extends SubCommand {
                     }
                     command = command.substring(0, command.length() - 1);
 
-                    sender.sendMessage(govManager.removeAllowedCommand(command));
+                    if (config.getAllowedCommands().contains(command.toLowerCase())) {
+
+                        govManager.removeAllowedCommand(command);
+                        sender.sendMessage(plugin.prefix + "Proposals can no longer be made for " + plugin.mainColor + "/" + command + ".");
+                    }
+                    else {
+                        sender.sendMessage(plugin.prefix + plugin.mainColor + "/" + command + plugin.defaultColor + " is not an allowed command and therefore can't be removed.");
+                    }
                 }
                 else {
                     sender.sendMessage(prefix + "Please specify what command you would like remove.");
@@ -172,12 +205,12 @@ public class ConfigCommand extends SubCommand {
                 }
             }
             else {
-                sender.sendMessage(prefix + "'" + args[0] + "' is not a valid configuration setting.");
+                sender.sendMessage(plugin.prefix + "Incorrect arguments.");
                 sender.sendMessage(this.getUsage());
             }
         }
         else {
-            sender.sendMessage(prefix + "Please choose a setting to configure.");
+            sender.sendMessage(plugin.prefix + "Incorrect arguments.");
             sender.sendMessage(this.getUsage());
         }
         return true;

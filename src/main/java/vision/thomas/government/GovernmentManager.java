@@ -1,6 +1,9 @@
 package vision.thomas.government;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class GovernmentManager {
 
@@ -16,12 +19,9 @@ public class GovernmentManager {
 
     public String setGovType(int newType) {
 
-        config.reloadConfig();
-        if (newType != getGovType()) {
+        if (newType != config.getGovType()) {
 
-            config.govType = newType;
-            config.cfg.set("Government.Type", newType);
-            plugin.saveConfig();
+            config.setGovType(newType);
 
             return plugin.prefix + "Government type changed to " + getGovName() + ".";
         }
@@ -30,51 +30,45 @@ public class GovernmentManager {
         }
     }
 
-    public int getGovType() {
+    public void addGovLeader(String newLeader) {
 
-        config.reloadConfig();
-        return config.govType;
+        List<String> newLeaders = config.getGovLeaders();
+        newLeaders.add(newLeader);
+
+        config.setGovLeaders(newLeaders);
     }
 
-    public String addGovLeader(String newLeader) {
+    public void addGovLeader(Player newLeader) {
 
-        config.reloadConfig();
+        List<String> newLeaders = config.getGovLeaders();
+        newLeaders.add(newLeader.getUniqueId().toString());
 
-        if (!config.govLeaders.contains(getGovLeaderId(newLeader))) {
+        config.setGovLeaders(newLeaders);
 
-            config.govLeaders.add(getGovLeaderId(newLeader));
-            config.cfg.set("Government.Leaders", config.govLeaders);
-            plugin.saveConfig();
-
-            return plugin.prefix + newLeader + " is now a " + getTypeOfGovLeader() + ".";
-        }
-        else {
-            return plugin.prefix + newLeader + " is already " + getTypeOfGovLeader() + ".";
-        }
+        newLeader.sendMessage(plugin.prefix + "You are now a " + getTypeOfGovLeader() + ".");
     }
 
-    public String removeGovLeader(String oldLeader) {
+    public void removeGovLeader(String oldLeader) {
 
-        config.reloadConfig();
+        List<String> newLeaders = config.getGovLeaders();
+        newLeaders.remove(oldLeader);
 
-        if (config.govLeaders.contains(getGovLeaderId(oldLeader))) {
-
-            config.govLeaders.remove(getGovLeaderId(oldLeader));
-            config.cfg.set("Government.Leaders", config.govLeaders);
-            plugin.saveConfig();
-
-            return plugin.prefix + oldLeader + " is no longer a " + getTypeOfGovLeader() + ".";
-        }
-        else {
-            return plugin.prefix + oldLeader + " is not a " + getTypeOfGovLeader() + " and can't be removed.";
-        }
+        config.setGovLeaders(newLeaders);
     }
 
-    public boolean govLeadersContains(String leaderName) {
+    public void removeGovLeader(Player oldLeader) {
 
-        config.reloadConfig();
+        List<String> newLeaders = config.getGovLeaders();
+        newLeaders.remove(oldLeader.getUniqueId().toString());
 
-        if (config.govLeaders.contains(getGovLeaderId(leaderName))) {
+        config.setGovLeaders(newLeaders);
+
+        oldLeader.sendMessage(plugin.prefix + "You are no longer a " + getTypeOfGovLeader() + ".");
+    }
+
+    public boolean govLeadersContains(String leaderDisplayName) {
+
+        if (config.getGovLeaders().contains(getGovLeaderId(leaderDisplayName))) {
             return true;
         }
         else {
@@ -82,64 +76,42 @@ public class GovernmentManager {
         }
     }
 
-    public String addAllowedCommand(String command) {
+    public void addAllowedCommand(String command) {
 
-        config.reloadConfig();
+        List<String> newAllowedCommands = config.getAllowedCommands();
+        newAllowedCommands.add(command);
 
-        if (!config.allowedCommands.contains(command.toLowerCase())) {
-
-            config.allowedCommands.add(command.toLowerCase());
-            config.cfg.set("Commands.Allowed", config.allowedCommands);
-            plugin.saveConfig();
-
-            return plugin.prefix + "Proposals can now be created to run " + plugin.mainColor + "/" + command + ".";
-        }
-        else {
-            return plugin.prefix + "/" + command + " is already an allowed command.";
-        }
+        config.setAllowedCommands(newAllowedCommands);
     }
 
-    public String removeAllowedCommand(String command) {
+    public void removeAllowedCommand(String command) {
 
-        config.reloadConfig();
+        List<String> newAllowedCommands = config.getAllowedCommands();
+        newAllowedCommands.remove(command);
 
-        if (config.allowedCommands.contains(command.toLowerCase())) {
-
-            config.allowedCommands.remove(command.toLowerCase());
-            config.cfg.set("Commands.Allowed", config.allowedCommands);
-            plugin.saveConfig();
-
-            return plugin.prefix + "Proposals can no longer be made for " + plugin.mainColor + "/" + command + ".";
-        }
-        else {
-            return plugin.prefix + plugin.mainColor + "/" + command + plugin.defaultColor + " is not an allowed command and therefore can't be removed.";
-        }
+        config.setAllowedCommands(newAllowedCommands);
     }
 
-    public String getGovLeaderId(String playerName) {
+    public String getGovLeaderId(String displayName) {
 
-        return Bukkit.getOfflinePlayer(playerName).getUniqueId().toString();
+        return Bukkit.getOfflinePlayer(displayName).getUniqueId().toString();
     }
 
     public String getTypeOfGovLeader() {
 
-        config.reloadConfig();
-
-        switch (config.govType) {
+        switch (config.getGovType()) {
             case 1:
                 return "Representative";
             case 2:
                 return "Dictator";
             default:
-                return "There are no leaders in a Direct Democracy. Gov type is: '" + config.govType + "'.";
+                return "There are no leaders in a Direct Democracy. Gov type is: '" + config.getGovType() + "'.";
         }
     }
 
     public String getGovName() {
 
-        config.reloadConfig();
-
-        switch (config.govType) {
+        switch (config.getGovType()) {
             case 1:
                 return "Republic";
             case 2:

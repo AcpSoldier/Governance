@@ -7,7 +7,9 @@ import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class VoteManager implements Listener {
 
@@ -15,16 +17,21 @@ public class VoteManager implements Listener {
 
     private Config config;
 
+    private GovernmentManager govManager;
+
     private static Proposal currentProposal;
 
     private static boolean isVoteInProgress = false;
 
     private static boolean voteCountInProgress = false;
 
+    public static Map<Player, String> creatingProposal = new HashMap<>();
+
     public VoteManager(Government plugin) {
 
         this.plugin = plugin;
         config = new Config(plugin);
+        govManager = new GovernmentManager(plugin);
     }
 
     public void castVote(Player voter, Proposal proposal, String vote) {
@@ -38,37 +45,7 @@ public class VoteManager implements Listener {
         }
     }
 
-    public Proposal getCurrentProposal() {
-
-        return currentProposal;
-    }
-
-    public void setCurrentProposal(Proposal proposal) {
-
-        currentProposal = proposal;
-    }
-
-    public static boolean isVoteInProgress() {
-
-        return isVoteInProgress;
-    }
-
-    public static void setVoteInProgress(boolean voteInProgress) {
-
-        VoteManager.isVoteInProgress = voteInProgress;
-    }
-
-    public static boolean isVoteCountInProgress() {
-
-        return voteCountInProgress;
-    }
-
-    public static void setVoteCountInProgress(boolean voteCountInProgress) {
-
-        VoteManager.voteCountInProgress = voteCountInProgress;
-    }
-
-    public void startTimer() {
+    public void startTimer(boolean isElection) {
 
         new BukkitRunnable() {
 
@@ -81,20 +58,29 @@ public class VoteManager implements Listener {
             public void run() {
 
                 if (firstRun) {
-                    config.reloadConfig();
-                    time = config.voteTimeInSeconds;
-                    announceVoteAt = config.announceVoteAt;
+                    time = config.getVoteTimeInSeconds();
+                    announceVoteAt = config.getAnnounceVoteAt();
                     firstRun = false;
                 }
                 if (isVoteInProgress()) {
                     if (time <= 0) {
                         setVoteCountInProgress(true);
-                        plugin.announcement.announceVoteCount();
+                        if (isElection) {
+                            plugin.announcement.announceElectionVoteCount();
+                        }
+                        else {
+                            plugin.announcement.announceVoteCount();
+                        }
 
                         cancel();
                     }
                     else if (announceVoteAt.contains(time)) {
-                        plugin.announcement.announceVoteTime(time);
+                        if (isElection) {
+                            plugin.announcement.announceElectionVoteTime(time);
+                        }
+                        else {
+                            plugin.announcement.announceVoteTime(time);
+                        }
                     }
                     time--;
                 }
@@ -105,7 +91,7 @@ public class VoteManager implements Listener {
         }.runTaskTimer(plugin, 0, 20);
     }
 
-    public void countVotes() {
+    public void countVotes(boolean election) {
 
         new BukkitRunnable() {
 
@@ -117,16 +103,43 @@ public class VoteManager implements Listener {
                 float percentYes = (int) Math.round(100.0 / (totalVotes) * votesYes);
                 float percentNo = (int) Math.round(100.0 / (totalVotes) * votesNo);
 
-                config.reloadConfig();
-                if (totalVotes >= config.minVotesRequired) {
-                    if (percentYes >= config.percentNeededToPass) {
-                        plugin.announcement.announceProposalResults(true, percentYes, percentNo, votesYes, votesNo, "");
+                if (totalVotes >= config.getMinVotesRequired()) {
+                    if (percentYes >= config.getPercentNeededToPass()) {
+
+                        if (election) {
+                            plugin.announcement.announceElectionResults(true, percentYes, percentNo, votesYes, votesNo, "");
+                        }
+                        else {
+                            plugin.announcement.announceProposalResults(true, percentYes, percentNo, votesYes, votesNo, "");
+                        }
 
                         new BukkitRunnable() {
 
                             public void run() {
 
-                                executeProposalCommand(20);
+                                if (election) {
+                                    if (currentProposal.getCompetitor() != null) {
+                                        if (currentProposal.getNominated().isOnline()) {
+                                            govManager.addGovLeader(currentProposal.getNominated());
+                                        }
+                                        else {
+                                            govManager.addGovLeader(currentProposal.getNominated().getUniqueId().toString());
+                                        }
+                                        if (currentProposal.getCompetitor().isOnline()) {
+                                            govManager.removeGovLeader(currentProposal.getCompetitor());
+                                        }
+                                        else {
+                                            govManager.removeGovLeader(currentProposal.getCompetitor().getUniqueId().toString());
+                                        }
+                                    }
+                                    else {
+                                        govManager.addGovLeader(currentProposal.getNominated().getUniqueId().toString());
+                                    }
+                                    finishProposal();
+                                }
+                                else {
+                                    executeProposalCommand(20);
+                                }
                                 cancel();
                             }
                         }.runTaskLater(plugin, 40);
@@ -134,12 +147,22 @@ public class VoteManager implements Listener {
                     }
                     else {
                         finishProposal();
-                        plugin.announcement.announceProposalResults(false, percentYes, percentNo, votesYes, votesNo, "Not enough votes in the positive.");
+                        if (election) {
+                            plugin.announcement.announceElectionResults(false, percentYes, percentNo, votesYes, votesNo, "Not enough votes in the positive.");
+                        }
+                        else {
+                            plugin.announcement.announceProposalResults(false, percentYes, percentNo, votesYes, votesNo, "Not enough votes in the positive.");
+                        }
                     }
                 }
                 else {
                     finishProposal();
-                    plugin.announcement.announceProposalResults(false, percentYes, percentNo, votesYes, votesNo, ("Not enough people voted. Minimum required votes is set to " + config.minVotesRequired));
+                    if (election) {
+                        plugin.announcement.announceElectionResults(false, percentYes, percentNo, votesYes, votesNo, ("Not enough people voted. Minimum required votes is set to " + config.getMinVotesRequired()));
+                    }
+                    else {
+                        plugin.announcement.announceProposalResults(false, percentYes, percentNo, votesYes, votesNo, ("Not enough people voted. Minimum required votes is set to " + config.getMinVotesRequired()));
+                    }
                 }
             }
         }.runTaskLater(plugin, 40);
@@ -175,7 +198,7 @@ public class VoteManager implements Listener {
                     else {
                         wasAlreadyAnOp = true;
                     }
-                    plugin.getServer().dispatchCommand(proposer, currentProposal.getCommand());
+                    plugin.getServer().dispatchCommand(proposer, currentProposal.getCommand().substring(1));
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -194,6 +217,36 @@ public class VoteManager implements Listener {
         if (isVoteCountInProgress()) {
             event.setCancelled(true);
         }
+    }
+
+    public Proposal getCurrentProposal() {
+
+        return currentProposal;
+    }
+
+    public void setCurrentProposal(Proposal proposal) {
+
+        currentProposal = proposal;
+    }
+
+    public static boolean isVoteInProgress() {
+
+        return isVoteInProgress;
+    }
+
+    public static void setVoteInProgress(boolean setVoteInProgress) {
+
+        isVoteInProgress = setVoteInProgress;
+    }
+
+    public static boolean isVoteCountInProgress() {
+
+        return voteCountInProgress;
+    }
+
+    public static void setVoteCountInProgress(boolean setVoteCountInProgress) {
+
+        voteCountInProgress = setVoteCountInProgress;
     }
 
 }
