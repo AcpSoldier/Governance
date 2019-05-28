@@ -57,8 +57,6 @@ public final class Government extends JavaPlugin {
         getServer().getPluginManager().registerEvents(proposalCommand, this);
         getServer().getPluginManager().registerEvents(voteManager, this);
 
-        cmdEx.register(new ProposalCommand(this));
-
         // If the server was reloaded, add all of the online players back into the 'accounts' HashMap.
         if (Bukkit.getOnlinePlayers().size() > 0) {
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -79,7 +77,7 @@ public final class Government extends JavaPlugin {
         try {
             if (database.getConnection() != null && !database.getConnection().isClosed()) {
                 try {
-                    Bukkit.getLogger().info("[Governance]: Closing player database connection...");
+                    Bukkit.getLogger().info("[Governance] Closing player database connection...");
                     database.getConnection().close();
                 } catch (SQLException e) {
                     e.printStackTrace();
