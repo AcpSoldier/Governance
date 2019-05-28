@@ -3,8 +3,6 @@ package vision.thomas.government.accounts;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import vision.thomas.government.Government;
@@ -58,27 +56,6 @@ public class AccountManager implements Listener {
 
         Player player = event.getPlayer();
         accounts.remove(player.getUniqueId());
-    }
-
-    // Test events to make sure the DB is working properly.
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-
-        Player player = event.getPlayer();
-        Account account = getAccount(player.getUniqueId());
-
-        incrementRespect(account, 1);
-        player.sendMessage(plugin.prefix + "New respect: " + account.getRespect());
-    }
-
-    @EventHandler
-    public void onBlockPlace(BlockPlaceEvent event) {
-
-        Player player = event.getPlayer();
-        Account account = getAccount(player.getUniqueId());
-
-        incrementRespect(account, -1);
-        player.sendMessage(plugin.prefix + "New respect: " + account.getRespect());
     }
 
     public void incrementRespect(Account account, int amount) {
