@@ -105,8 +105,7 @@ public class ProposalCommand extends SubCommand implements Listener {
 
         }
         else {
-            sender.sendMessage(plugin.prefix + "Incorrect arguments.");
-            sender.sendMessage(this.getUsage());
+            sender.sendMessage(plugin.prefix + "Only players can vote on proposals, sorry console : ( ");
         }
         return true;
     }
