@@ -71,6 +71,7 @@ public class Config {
     public void setPluginEnabled(boolean pluginEnabled) {
 
         isPluginEnabled = pluginEnabled;
+        cfg = plugin.getConfig();
         cfg.set("Settings.Enabled", isPluginEnabled);
         plugin.saveConfig();
     }
@@ -154,6 +155,7 @@ public class Config {
     public void setGovType(int newType) {
 
         this.govType = newType;
+        cfg = plugin.getConfig();
         cfg.set("Government.Type", newType);
         plugin.saveConfig();
     }
