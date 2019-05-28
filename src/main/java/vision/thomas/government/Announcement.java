@@ -33,12 +33,14 @@ public class Announcement {
 
     public void announceProposal(Player proposer, Proposal proposal) {
 
+        playSoundIfEnabled(proposer, Sound.BLOCK_BEACON_ACTIVATE, 2.0F, 2.0F);
+
         Bukkit.broadcastMessage(plugin.fullLine);
         Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + proposer.getName() + "[0] " + " has proposed a vote!"));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Run command: " + plugin.highlightColor + "/" + proposal.getCommand()));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Run command: " + plugin.highlightColor + proposal.getCommand()));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Reason: " + plugin.mainColor + "'" + proposal.getReason() + "'"));
 
-        if (governmentManager.getGovType() == 1) {
+        if (config.getGovType() == 1) {
             Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "You must be a " + governmentManager.getTypeOfGovLeader() + " to vote."));
         }
 
@@ -65,39 +67,76 @@ public class Announcement {
 
         Bukkit.broadcastMessage(plugin.fullLine);
 
-        playSoundIfEnabled(proposer, Sound.BLOCK_BEACON_ACTIVATE, 2.0F, 2.0F);
     }
 
-    public void annouceElection(Player runner, boolean competition) {
+    public void announceElection(Player proposer, Player elected) {
 
-        String positionType = "(Logic for what type of government Position)";
-        String announcement = plugin.prefix + runner.getName() + "[getRespectLevel logic] " + " is running to be a " + positionType + "!";
+        playSoundIfEnabled(proposer, Sound.BLOCK_BEACON_ACTIVATE, 2.0F, 2.0F);
 
-        TextComponent voteYesMessage = new TextComponent(centeredMessage.get("CLICK TO VOTE YES"));
+        Bukkit.broadcastMessage(plugin.fullLine);
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + proposer.getDisplayName() + "[0]" + " has nominated " + plugin.highlightColor + elected.getDisplayName() + plugin.mainColor + "[0] to be a " + governmentManager.getTypeOfGovLeader() + "!"));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Current amount of " + governmentManager.getTypeOfGovLeader() + "s: " + config.getGovLeaders().size() + "."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Maximum amount of " + governmentManager.getTypeOfGovLeader() + "s: " + config.getMaxLeaders() + "."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "If elected, " + elected.getDisplayName() + " will not replace any current " + governmentManager.getTypeOfGovLeader() + "s."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Maximum term length: " + config.getElegantTermLength(config.getMaxTermLengthInMinutes())) + ".");
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Safety time: " + config.getElegantTermLength(config.getMinTermLengthInMinutes())) + ".");
+
+        TextComponent voteYesMessage = new TextComponent("      CLICK TO VOTE YES");
         voteYesMessage.setColor(ChatColor.GREEN);
         voteYesMessage.setBold(true);
-        voteYesMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Vote to make " + runner.getName() + " the new " + positionType + ".").create()));
+        voteYesMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/gov vote yes [reason]").create()));
         voteYesMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/gov vote yes"));
 
-        TextComponent voteNoMessage = new TextComponent(centeredMessage.get("CLICK TO VOTE NO"));
+        TextComponent mediator = new TextComponent("   -   ");
+        mediator.setColor(ChatColor.WHITE);
+        mediator.setBold(true);
+
+        TextComponent voteNoMessage = new TextComponent("CLICK TO VOTE NO");
         voteNoMessage.setColor(ChatColor.RED);
         voteNoMessage.setBold(true);
-        voteNoMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Vote to make " + runner.getName()).create()));
+        voteNoMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/gov vote no [reason]").create()));
         voteNoMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/gov vote no"));
 
-        if (competition) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
 
-            String officeHolder = "[Logic for getting whoever is currently in office]";
-            voteNoMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Vote to keep " + officeHolder + " as the " + positionType + ".").create()));
-            announcement = plugin.prefix + runner.getName() + "[getRespectLevel logic] " + " is running to replace " + officeHolder + " as a " + positionType + "!";
+            player.spigot().sendMessage(voteYesMessage, mediator, voteNoMessage);
         }
+        Bukkit.broadcastMessage(plugin.fullLine);
+    }
 
-        Bukkit.broadcastMessage(announcement);
+    public void announceElectionCompetition(Player proposer, Player elected, Player competitor) {
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            p.spigot().sendMessage(voteYesMessage);
-            p.spigot().sendMessage(voteNoMessage);
+        playSoundIfEnabled(proposer, Sound.BLOCK_BEACON_ACTIVATE, 2.0F, 2.0F);
+
+        Bukkit.broadcastMessage(plugin.fullLine);
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + proposer.getDisplayName() + "[0]" + " has nominated " + plugin.highlightColor + elected.getDisplayName() + plugin.mainColor + "[0] to be a " + governmentManager.getTypeOfGovLeader() + "!"));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Current amount of " + governmentManager.getTypeOfGovLeader() + "s: " + config.getGovLeaders().size() + "."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Maximum amount of " + governmentManager.getTypeOfGovLeader() + "s: " + config.getMaxLeaders() + "."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "If elected, " + elected.getDisplayName() + " will replace " + competitor.getDisplayName() + "."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Maximum term length: " + config.getElegantTermLength(config.getMaxTermLengthInMinutes())) + ".");
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Safety time: " + config.getElegantTermLength(config.getMinTermLengthInMinutes())) + ".");
+
+        TextComponent voteYesMessage = new TextComponent("      CLICK TO VOTE YES");
+        voteYesMessage.setColor(ChatColor.GREEN);
+        voteYesMessage.setBold(true);
+        voteYesMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/gov vote yes [reason]").create()));
+        voteYesMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/gov vote yes"));
+
+        TextComponent mediator = new TextComponent("   -   ");
+        mediator.setColor(ChatColor.WHITE);
+        mediator.setBold(true);
+
+        TextComponent voteNoMessage = new TextComponent("CLICK TO VOTE NO");
+        voteNoMessage.setColor(ChatColor.RED);
+        voteNoMessage.setBold(true);
+        voteNoMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/gov vote no [reason]").create()));
+        voteNoMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/gov vote no"));
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+
+            player.spigot().sendMessage(voteYesMessage, mediator, voteNoMessage);
         }
+        Bukkit.broadcastMessage(plugin.fullLine);
     }
 
     public void announceAppeal(Player p, String appeal) {
@@ -134,26 +173,26 @@ public class Announcement {
 
     public void playSoundIfEnabled(Player player, Sound sound, float volume, float pitch) {
 
-        if (config.isVoteSoundsForAll) {
+        if (config.isVoteSoundsForAll()) {
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
 
                 onlinePlayer.playSound(player.getLocation(), sound, volume, pitch);
             }
         }
-        else if (config.isVoteSoundsForSelf) {
+        else if (config.isVoteSoundsForSelf()) {
             player.playSound(player.getLocation(), sound, volume, pitch);
         }
     }
 
     public void announceProposalCancelation(Player canceler, Proposal proposal) {
 
-        Bukkit.broadcastMessage(plugin.prefix + canceler.getName() + " has canceled the proposal /" + proposal.getCommand() + ".");
+        Bukkit.broadcastMessage(plugin.prefix + canceler.getName() + " has canceled the proposal " + proposal.getCommand() + ".");
         playSoundIfEnabled(canceler, Sound.BLOCK_BEACON_DEACTIVATE, 2.0F, 2.0F);
     }
 
     public void announceProposalCancelation(Player canceler, Proposal proposal, String reason) {
 
-        Bukkit.broadcastMessage(plugin.prefix + canceler.getName() + " has canceled the proposal /" + proposal.getCommand() + ". Reason: " + ChatColor.ITALIC + "" + ChatColor.WHITE + reason + ".");
+        Bukkit.broadcastMessage(plugin.prefix + canceler.getName() + " has canceled the proposal " + proposal.getCommand() + ". Reason: " + ChatColor.ITALIC + "" + ChatColor.WHITE + reason + ".");
         playSoundIfEnabled(canceler, Sound.BLOCK_BEACON_DEACTIVATE, 2.0F, 2.0F);
     }
 
@@ -170,7 +209,7 @@ public class Announcement {
 
         Bukkit.broadcastMessage(plugin.fullLine);
         Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + "Only " + plugin.highlightColor + announceTime + plugin.mainColor + " left to vote on the current proposal!"));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Run command: " + plugin.highlightColor + "/" + voteManager.getCurrentProposal().getCommand()));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Run command: " + plugin.highlightColor + voteManager.getCurrentProposal().getCommand()));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Reason: " + plugin.mainColor + "'" + voteManager.getCurrentProposal().getReason() + "'"));
         Bukkit.broadcastMessage(plugin.fullLine);
 
@@ -185,7 +224,7 @@ public class Announcement {
         Bukkit.broadcastMessage(plugin.fullLine);
         if (passed) {
             Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Proposal to run the command"));
-            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + plugin.highlightColor + "/" + voteManager.getCurrentProposal().getCommand() + plugin.defaultColor + " has " + ChatColor.GREEN + "" + ChatColor.BOLD + "PASSED!"));
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + plugin.highlightColor + voteManager.getCurrentProposal().getCommand() + plugin.defaultColor + " has " + ChatColor.GREEN + "" + ChatColor.BOLD + "PASSED!"));
             delayedAnnouncement("" + plugin.prefix + plugin.highlightColor + "Executing proposal...", 40, false);
 
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -194,11 +233,46 @@ public class Announcement {
         }
         else {
             Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Proposal to run the command"));
-            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + plugin.highlightColor + "/" + voteManager.getCurrentProposal().getCommand() + plugin.defaultColor + " has " + ChatColor.RED + "" + ChatColor.BOLD + "FAILED!"));
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + plugin.highlightColor + voteManager.getCurrentProposal().getCommand() + plugin.defaultColor + " has " + ChatColor.RED + "" + ChatColor.BOLD + "FAILED!"));
             for (Player player : Bukkit.getOnlinePlayers()) {
                 playSoundIfEnabled(player, Sound.BLOCK_BEACON_DEACTIVATE, 2.0F, 2.0F);
             }
         }
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Voted yes: " + ChatColor.GREEN + "" + ChatColor.BOLD + percentYes + "%" + plugin.defaultColor + " Voted no: " + ChatColor.RED + "" + ChatColor.BOLD + percentNo + "%" + plugin.defaultColor + ". Total votes: " + ChatColor.BOLD + (votesYes + votesNo + ".")));
+
+        if (reasonFailed.length() > 1) {
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + reasonFailed));
+        }
+        Bukkit.broadcastMessage(plugin.fullLine);
+        voteManager.setVoteCountInProgress(false);
+    }
+
+    public void announceElectionResults(boolean passed, float percentYes, float percentNo, int votesYes, int votesNo, String reasonFailed) {
+
+        String nominated = voteManager.getCurrentProposal().getNominated().getDisplayName();
+        Player competitor = voteManager.getCurrentProposal().getCompetitor();
+
+        Bukkit.broadcastMessage(plugin.fullLine);
+        if (passed) {
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Proposal to elect " + plugin.highlightColor + nominated + plugin.defaultColor + " has " + ChatColor.GREEN + "" + ChatColor.BOLD + "PASSED!"));
+            if (competitor != null) {
+                Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + nominated + " won!"));
+            }
+            delayedAnnouncement("" + plugin.prefix + plugin.highlightColor + "Putting " + nominated + " in office as a " + governmentManager.getTypeOfGovLeader() + "...", 40, false);
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                playSoundIfEnabled(player, Sound.BLOCK_BEACON_POWER_SELECT, 2.0F, 2.0F);
+            }
+        }
+        else {
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Proposal to elect " + plugin.highlightColor + nominated + plugin.defaultColor + " to be a " + plugin.highlightColor + governmentManager.getTypeOfGovLeader() + plugin.defaultColor + " has " + ChatColor.RED + "" + ChatColor.BOLD + "FAILED!"));
+            if (competitor != null) {
+                Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + competitor.getDisplayName() + " won!"));
+            }
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                playSoundIfEnabled(player, Sound.BLOCK_BEACON_DEACTIVATE, 2.0F, 2.0F);
+            }
+        }
+
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Voted yes: " + ChatColor.GREEN + "" + ChatColor.BOLD + percentYes + "%" + plugin.defaultColor + " Voted no: " + ChatColor.RED + "" + ChatColor.BOLD + percentNo + "%" + plugin.defaultColor + ". Total votes: " + ChatColor.BOLD + (votesYes + votesNo + ".")));
 
         if (reasonFailed.length() > 1) {
@@ -214,9 +288,8 @@ public class Announcement {
         int votesNo = voteManager.getCurrentProposal().getVotedNo().size();
         int abstentions = Bukkit.getOnlinePlayers().size() - (votesYes + votesNo);
 
-        if (governmentManager.getGovType() == 1) {
-            config.reloadConfig();
-            abstentions = config.govLeaders.size() - (votesYes + votesNo);
+        if (config.getGovType() == 1) {
+            abstentions = config.getGovLeaders().size() - (votesYes + votesNo);
         }
 
         Bukkit.broadcastMessage(plugin.fullLine);
@@ -227,14 +300,11 @@ public class Announcement {
             playSoundIfEnabled(player, Sound.BLOCK_WOODEN_PRESSURE_PLATE_CLICK_ON, 2.0F, 2.0F);
         }
 
-        config.reloadConfig();
-
         delayedAnnouncement("" + ChatColor.GREEN + ChatColor.BOLD + "Number of votes in favor: " + votesYes, 15, false);
         delayedAnnouncement("" + ChatColor.RED + ChatColor.BOLD + "Number of votes against: " + votesNo, 30, false);
         delayedAnnouncement("" + ChatColor.YELLOW + ChatColor.BOLD + "Number of abstentions: " + abstentions, 45, false);
-        delayedAnnouncement("" + ChatColor.WHITE + ChatColor.BOLD + "Percentage needed to pass: " + config.percentNeededToPass + "%", 60, false);
-        delayedAnnouncement("" + ChatColor.WHITE + ChatColor.BOLD + "Minimum votes required to pass: " + config.minVotesRequired, 75, true);
-
+        delayedAnnouncement("" + ChatColor.WHITE + ChatColor.BOLD + "Percentage needed to pass: " + config.getPercentNeededToPass() + "%", 60, false);
+        delayedAnnouncement("" + ChatColor.WHITE + ChatColor.BOLD + "Minimum votes required to pass: " + config.getMinVotesRequired(), 75, true);
     }
 
     private void delayedAnnouncement(String announcement, int delay, boolean lastAnnouncement) {
@@ -250,7 +320,12 @@ public class Announcement {
                 Bukkit.broadcastMessage(centeredMessage.get(announcement));
 
                 if (lastAnnouncement) {
-                    voteManager.countVotes();
+                    if (voteManager.getCurrentProposal().getNominated() != null) {
+                        voteManager.countVotes(true);
+                    }
+                    else {
+                        voteManager.countVotes(false);
+                    }
                 }
                 cancel();
             }
@@ -262,7 +337,7 @@ public class Announcement {
         Bukkit.broadcastMessage(plugin.fullLine);
 
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + voteManager.getCurrentProposal().getProposer().getDisplayName() + " (Dictator) has issued a decree"));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Run command: " + plugin.highlightColor + "/" + proposal.getCommand()));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Run command: " + plugin.highlightColor + proposal.getCommand()));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Reason: " + plugin.mainColor + "'" + proposal.getReason() + "'"));
         delayedAnnouncement("" + plugin.prefix + plugin.highlightColor + "Executing proposal...", 40, false);
 
@@ -271,6 +346,54 @@ public class Announcement {
         }
         Bukkit.broadcastMessage(plugin.fullLine);
 
+    }
+
+    public void announceElectionVoteCount() {
+
+        int votesYes = voteManager.getCurrentProposal().getVotedYes().size();
+        int votesNo = voteManager.getCurrentProposal().getVotedNo().size();
+        int abstentions = Bukkit.getOnlinePlayers().size() - (votesYes + votesNo);
+
+        Bukkit.broadcastMessage(plugin.fullLine);
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.prefix + plugin.defaultColor + "Counting votes..."));
+        Bukkit.broadcastMessage(plugin.fullLine);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            playSoundIfEnabled(player, Sound.BLOCK_WOODEN_PRESSURE_PLATE_CLICK_ON, 2.0F, 2.0F);
+        }
+
+        delayedAnnouncement("" + ChatColor.GREEN + ChatColor.BOLD + "Number of votes in favor: " + votesYes, 15, false);
+        delayedAnnouncement("" + ChatColor.RED + ChatColor.BOLD + "Number of votes against: " + votesNo, 30, false);
+        delayedAnnouncement("" + ChatColor.YELLOW + ChatColor.BOLD + "Number of abstentions: " + abstentions, 45, false);
+        delayedAnnouncement("" + ChatColor.WHITE + ChatColor.BOLD + "Percentage needed to pass: " + config.getPercentNeededToPass() + "%", 60, false);
+        delayedAnnouncement("" + ChatColor.WHITE + ChatColor.BOLD + "Minimum votes required to pass: " + config.getMinVotesRequired(), 75, true);
+    }
+
+    public void announceElectionVoteTime(int timeLeftInSeconds) {
+
+        String announceTime;
+        String nominated = voteManager.getCurrentProposal().getNominated().getDisplayName();
+        Player competitor = voteManager.getCurrentProposal().getCompetitor();
+
+        if (timeLeftInSeconds >= 60) {
+            announceTime = (timeLeftInSeconds / 60 + (timeLeftInSeconds / 60 != 1 ? " minutes" : " minute"));
+        }
+        else {
+            announceTime = (timeLeftInSeconds + (timeLeftInSeconds != 1 ? " seconds" : " second"));
+        }
+
+        Bukkit.broadcastMessage(plugin.fullLine);
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + "Only " + plugin.highlightColor + announceTime + plugin.mainColor + " left to vote in the election!"));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Elect " + plugin.highlightColor + nominated + plugin.defaultColor + " to be a " + plugin.highlightColor + governmentManager.getTypeOfGovLeader() + plugin.defaultColor + "."));
+        if (competitor != null) {
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "(" + nominated + " would replace " + competitor.getDisplayName() + ")"));
+        }
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Reason: " + plugin.mainColor + "'" + voteManager.getCurrentProposal().getReason() + "'"));
+        Bukkit.broadcastMessage(plugin.fullLine);
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            playSoundIfEnabled(player, Sound.BLOCK_WOODEN_PRESSURE_PLATE_CLICK_ON, 2.0F, 2.0F);
+        }
     }
 
 }
