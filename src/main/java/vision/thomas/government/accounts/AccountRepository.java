@@ -1,5 +1,7 @@
 package vision.thomas.government.accounts;
 
+import org.bukkit.Bukkit;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,7 +39,7 @@ public class AccountRepository {
         });
     }
 
-    protected CompletableFuture<Integer> insertAccount(UUID uuid) {
+    public CompletableFuture<Integer> insertAccount(UUID uuid) {
 
         return CompletableFuture.supplyAsync(() -> {
             try (PreparedStatement statement = manager.getPlugin().getDatabase().getConnection().prepareStatement(INSERT_ACCOUNT, Statement.RETURN_GENERATED_KEYS)) {
@@ -47,8 +49,13 @@ public class AccountRepository {
                 statement.executeUpdate();
 
                 try (ResultSet rs = statement.getGeneratedKeys()) {
-                    rs.first();
-                    return rs.getInt(1);
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
+                    else {
+                        Bukkit.getLogger().warning("[Governance]: Error while inserting account. This should not happen.");
+                        return null;
+                    }
                 }
             } catch (SQLException exception) {
                 throw new CompletionException(exception);

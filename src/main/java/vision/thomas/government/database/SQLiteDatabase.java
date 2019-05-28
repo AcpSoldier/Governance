@@ -1,5 +1,7 @@
 package vision.thomas.government.database;
 
+import org.bukkit.Bukkit;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -29,7 +31,7 @@ public class SQLiteDatabase {
         }
 
         if (open()) {
-            System.out.println("Yaaaay!");
+            Bukkit.getLogger().info("[Governance]: Opening connection to player database...");
         }
     }
 

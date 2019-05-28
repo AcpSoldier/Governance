@@ -20,7 +20,7 @@ public class AccountManager implements Listener {
 
     private final AccountRepository repository;
 
-    private final Map<UUID, Account> accounts = new HashMap<>();
+    public final Map<UUID, Account> accounts = new HashMap<>();
 
     private AtomicBoolean joinable = new AtomicBoolean();
 
@@ -30,7 +30,6 @@ public class AccountManager implements Listener {
 
         repository = new AccountRepository(this);
         repository.createTable().thenAccept(aVoid -> joinable.set(true));
-        System.out.println("Table is created.");
 
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
@@ -45,17 +44,11 @@ public class AccountManager implements Listener {
             return;
         }
 
-        System.out.println("Player joined.");
         repository.selectAccount(player.getUniqueId()).thenAccept(account -> {
-            System.out.println("Selecting player account...");
             if (account == null) {
-                System.out.println("Account was null...giving it a value.");
                 int id = repository.insertAccount(player.getUniqueId()).join();
-                System.out.println("Player's account ID is set.");
                 account = new Account(id, player.getUniqueId(), 0);
-                System.out.println("Player's account was created.");
             }
-            System.out.println("Put player's account into 'accounts'.");
             accounts.put(player.getUniqueId(), account);
         }).join();
     }
@@ -67,6 +60,7 @@ public class AccountManager implements Listener {
         accounts.remove(player.getUniqueId());
     }
 
+    // Test events to make sure the DB is working properly.
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
 
