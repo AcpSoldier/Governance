@@ -133,7 +133,12 @@ public class VoteManager implements Listener {
                                         }
                                     }
                                     else {
-                                        govManager.addGovLeader(currentProposal.getNominated().getUniqueId().toString());
+                                        if (currentProposal.getNominated().isOnline()) {
+                                            govManager.addGovLeader(currentProposal.getNominated());
+                                        }
+                                        else {
+                                            govManager.addGovLeader(currentProposal.getNominated().getUniqueId().toString());
+                                        }
                                     }
                                     finishProposal();
                                 }
