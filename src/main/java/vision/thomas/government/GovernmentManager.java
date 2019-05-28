@@ -48,10 +48,10 @@ public class GovernmentManager {
         newLeader.sendMessage(plugin.prefix + "You are now a " + getTypeOfGovLeader() + ".");
     }
 
-    public void removeGovLeader(String oldLeader) {
+    public void removeGovLeader(String oldLeaderId) {
 
         List<String> newLeaders = config.getGovLeaders();
-        newLeaders.remove(oldLeader);
+        newLeaders.remove(oldLeaderId);
 
         config.setGovLeaders(newLeaders);
     }
