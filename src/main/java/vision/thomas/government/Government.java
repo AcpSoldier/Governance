@@ -54,6 +54,7 @@ public final class Government extends JavaPlugin {
         cmdEx.register(new VoteCommand(this));
         cmdEx.register(new NominateCommand(this));
         cmdEx.register(new LeadersCommand(this));
+        cmdEx.register(new ResignCommand(this));
         cmdEx.register(proposalCommand);
 
         getServer().getPluginManager().registerEvents(proposalCommand, this);
