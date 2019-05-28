@@ -30,15 +30,25 @@ public class LeadersCommand extends SubCommand {
     @Override
     public boolean execute(CommandSender sender, String[] args) {
 
-        String leaders = "";
+        if (config.getGovType() != 0) {
+            String leaders = "";
 
-        for (String leaderId : config.getGovLeaders()) {
-            String leaderUsername = Bukkit.getOfflinePlayer(UUID.fromString(leaderId)).getName();
-            leaders = leaders + ", " + ChatColor.BOLD + leaderUsername;
+            for (String leaderId : config.getGovLeaders()) {
+                String leaderUsername = Bukkit.getOfflinePlayer(UUID.fromString(leaderId)).getName();
+                leaders = leaders + ", " + ChatColor.BOLD + leaderUsername;
+            }
+
+            if (leaders != "") {
+                sender.sendMessage(plugin.prefix + "Here is a list of the current " + govManager.getTypeOfGovLeader() + "s:");
+                sender.sendMessage(plugin.mainColor + leaders.substring(1));
+            }
+            else {
+                sender.sendMessage(plugin.prefix + "There are currently no " + govManager.getTypeOfGovLeader() + "s.");
+            }
         }
-
-        sender.sendMessage(plugin.prefix + "Here is a list of the current " + govManager.getTypeOfGovLeader() + "s:");
-        sender.sendMessage(plugin.mainColor + leaders.substring(1));
+        else {
+            sender.sendMessage(plugin.prefix + "There are no leaders under a " + govManager.getGovName());
+        }
         return true;
     }
 
