@@ -10,6 +10,7 @@ import vision.thomas.government.commands.ConfigCommand;
 import vision.thomas.government.commands.NominateCommand;
 import vision.thomas.government.commands.ProposalCommand;
 import vision.thomas.government.commands.VoteCommand;
+import vision.thomas.government.commands.*;
 import vision.thomas.government.commands.helpers.CommandExec;
 import vision.thomas.government.database.SQLiteDatabase;
 
@@ -52,6 +53,7 @@ public final class Government extends JavaPlugin {
         cmdEx.register(new ConfigCommand(this));
         cmdEx.register(new VoteCommand(this));
         cmdEx.register(new NominateCommand(this));
+        cmdEx.register(new LeadersCommand(this));
         cmdEx.register(proposalCommand);
 
         getServer().getPluginManager().registerEvents(proposalCommand, this);
