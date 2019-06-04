@@ -50,7 +50,7 @@ public class VoteManager implements Listener {
 
     public void startTimer(boolean isElection) {
 
-        Announcement announcements = plugin.getAnnouncement();
+        Announcements announcements = plugin.getAnnouncement();
 
         new BukkitRunnable() {
 
@@ -98,7 +98,7 @@ public class VoteManager implements Listener {
 
     public void countVotes(boolean election) {
 
-        Announcement announcements = plugin.getAnnouncement();
+        Announcements announcements = plugin.getAnnouncement();
 
         new BukkitRunnable() {
 
@@ -228,15 +228,16 @@ public class VoteManager implements Listener {
                 currentProposal.getProposer().sendMessage(plugin.prefix + ChatColor.GREEN + "" + ChatColor.BOLD + "+3 Respect Points" + plugin.defaultColor + " for passing a proposal.");
             }
 
-            if (currentProposal.getNominated().isOnline()) {
+            if (currentProposal.getNominated() != null) {
+                if (currentProposal.getNominated().isOnline()) {
 
-                currentProposal.getNominated().playSound(currentProposal.getProposer().getLocation(), Sound.BLOCK_ANVIL_USE, 2.0F, 2.0F);
+                    currentProposal.getNominated().playSound(currentProposal.getProposer().getLocation(), Sound.BLOCK_ANVIL_USE, 2.0F, 2.0F);
 
-                Account proposerAccount = plugin.getAccountManager().getAccount(currentProposal.getProposer().getUniqueId());
-                plugin.getAccountManager().incrementRespect(proposerAccount, 3);
-                currentProposal.getNominated().sendMessage(plugin.prefix + ChatColor.GREEN + "" + ChatColor.BOLD + "+5 Respect Points" + plugin.defaultColor + " for being elected by the majority.");
+                    Account proposerAccount = plugin.getAccountManager().getAccount(currentProposal.getProposer().getUniqueId());
+                    plugin.getAccountManager().incrementRespect(proposerAccount, 3);
+                    currentProposal.getNominated().sendMessage(plugin.prefix + ChatColor.GREEN + "" + ChatColor.BOLD + "+5 Respect Points" + plugin.defaultColor + " for being elected by the majority.");
+                }
             }
-
         }
         else {
             if (percentNo > 50) {

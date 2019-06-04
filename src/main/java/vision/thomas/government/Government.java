@@ -33,7 +33,7 @@ public final class Government extends JavaPlugin {
 
     private Config config;
 
-    private Announcement announcements;
+    private Announcements announcements;
 
     private SQLiteDatabase database;
 
@@ -53,7 +53,7 @@ public final class Government extends JavaPlugin {
         accountManager = new AccountManager(this);
         govManager = new GovernmentManager(this);
         voteManager = new VoteManager(this);
-        announcements = new Announcement(this);
+        announcements = new Announcements(this);
         proposalCommand = new ProposalCommand(this);
 
         CommandExec cmdEx = new CommandExec(this);
@@ -118,7 +118,7 @@ public final class Government extends JavaPlugin {
         return voteManager;
     }
 
-    public Announcement getAnnouncement() {
+    public Announcements getAnnouncement() {
 
         return announcements;
     }

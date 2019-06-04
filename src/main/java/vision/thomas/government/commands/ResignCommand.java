@@ -2,7 +2,7 @@ package vision.thomas.government.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vision.thomas.government.Announcement;
+import vision.thomas.government.Announcements;
 import vision.thomas.government.Government;
 import vision.thomas.government.GovernmentManager;
 import vision.thomas.government.commands.helpers.SubCommand;
@@ -13,7 +13,7 @@ public class ResignCommand extends SubCommand {
 
     private GovernmentManager govManager;
 
-    private Announcement announcements;
+    private Announcements announcements;
 
     public ResignCommand(Government plugin) {
 

@@ -17,7 +17,7 @@ public class NominateCommand extends SubCommand {
 
     private Config config;
 
-    private Announcement announcements;
+    private Announcements announcements;
 
     public NominateCommand(Government plugin) {
 

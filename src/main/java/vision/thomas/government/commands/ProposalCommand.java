@@ -19,7 +19,7 @@ public class ProposalCommand extends SubCommand implements Listener {
 
     private GovernmentManager governmentManager;
 
-    private Announcement announcement;
+    private Announcements announcements;
 
     private CenteredMessage centeredMessage = new CenteredMessage();
 
@@ -32,7 +32,7 @@ public class ProposalCommand extends SubCommand implements Listener {
         this.plugin = plugin;
         voteManager = plugin.getVoteManager();
         governmentManager = plugin.getGovManager();
-        announcement = plugin.getAnnouncement();
+        announcements = plugin.getAnnouncement();
         config = plugin.getConf();
     }
 
@@ -165,7 +165,7 @@ public class ProposalCommand extends SubCommand implements Listener {
 
                         proposer.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal created successfully.");
 
-                        announcement.announceProposal(proposer, proposal);
+                        announcements.announceProposal(proposer, proposal);
                         voteManager.creatingProposal.remove(proposer);
 
                         for (Player player : voteManager.creatingProposal.keySet()) {
@@ -176,7 +176,7 @@ public class ProposalCommand extends SubCommand implements Listener {
                         voteManager.startTimer(false);
                     }
                     else {
-                        announcement.announceDictatedProposal(proposal);
+                        announcements.announceDictatedProposal(proposal);
                         voteManager.executeProposalCommand(60);
                         voteManager.creatingProposal.remove(proposer);
 
@@ -230,10 +230,10 @@ public class ProposalCommand extends SubCommand implements Listener {
                         }
                         reason = reason.substring(0, reason.length() - 1);
 
-                        announcement.announceProposalCancelation(proposer, voteManager.getCurrentProposal(), reason);
+                        announcements.announceProposalCancelation(proposer, voteManager.getCurrentProposal(), reason);
                     }
                     else {
-                        announcement.announceProposalCancelation(proposer, voteManager.getCurrentProposal());
+                        announcements.announceProposalCancelation(proposer, voteManager.getCurrentProposal());
                     }
 
                     proposer.sendMessage(plugin.prefix + "Your proposal has been cancelled.");

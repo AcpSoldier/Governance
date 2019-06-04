@@ -12,7 +12,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import vision.thomas.government.accounts.Account;
 import vision.thomas.government.commands.helpers.CenteredMessage;
 
-public class Announcement {
+public class Announcements {
 
     private Government plugin;
 
@@ -24,7 +24,7 @@ public class Announcement {
 
     private CenteredMessage centeredMessage = new CenteredMessage();
 
-    public Announcement(Government plugin) {
+    public Announcements(Government plugin) {
 
         this.plugin = plugin;
         config = plugin.getConf();

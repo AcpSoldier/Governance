@@ -11,7 +11,7 @@ public class VoteCommand extends SubCommand {
 
     private VoteManager voteManager;
 
-    private Announcement announcement;
+    private Announcements announcements;
 
     private GovernmentManager governmentManager;
 
@@ -23,7 +23,7 @@ public class VoteCommand extends SubCommand {
         this.plugin = plugin;
         voteManager = plugin.getVoteManager();
         governmentManager = plugin.getGovManager();
-        announcement = plugin.getAnnouncement();
+        announcements = plugin.getAnnouncement();
         config = plugin.getConf();
     }
 
@@ -73,10 +73,10 @@ public class VoteCommand extends SubCommand {
                                     }
                                     reason = reason.substring(0, reason.length() - 1);
 
-                                    announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0], reason);
+                                    announcements.announceVote(voter, voteManager.getCurrentProposal(), args[0], reason);
                                 }
                                 else {
-                                    announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0]);
+                                    announcements.announceVote(voter, voteManager.getCurrentProposal(), args[0]);
                                 }
                             }
                             else {
@@ -122,10 +122,10 @@ public class VoteCommand extends SubCommand {
             }
             reason = reason.substring(0, reason.length() - 1);
 
-            announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0], reason);
+            announcements.announceVote(voter, voteManager.getCurrentProposal(), args[0], reason);
         }
         else {
-            announcement.announceVote(voter, voteManager.getCurrentProposal(), args[0]);
+            announcements.announceVote(voter, voteManager.getCurrentProposal(), args[0]);
         }
     }
 
