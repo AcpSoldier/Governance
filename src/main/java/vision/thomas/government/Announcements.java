@@ -83,7 +83,7 @@ public class Announcements {
         Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + proposer.getDisplayName() + plugin.highlightColor + "[" + proposerAccount.getRespect() + "]" + plugin.mainColor + " has nominated " + plugin.highlightColor + nominated.getDisplayName() + plugin.mainColor + " to be a " + govManager.getTypeOfGovLeader() + "!"));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + govManager.getTypeOfGovLeader() + " count is currently " + config.getGovLeaders().size() + "/" + config.getMaxLeaders() + " (" + (config.getMaxLeaders() - config.getGovLeaders().size()) + " slots available)."));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "If elected, " + nominated.getDisplayName() + " will not replace any current " + govManager.getTypeOfGovLeader() + "s."));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + nominated.getDisplayName() + plugin.highlightColor + "'s Respect Level: " + nominatedAccount.getRespect() + "."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + nominated.getDisplayName() + "'s " + plugin.highlightColor + "Respect Level: " + nominatedAccount.getRespect() + "."));
 
         TextComponent voteYesMessage = new TextComponent("      CLICK TO VOTE YES");
         voteYesMessage.setColor(ChatColor.GREEN);
@@ -120,8 +120,8 @@ public class Announcements {
         Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + proposer.getDisplayName() + plugin.highlightColor + "[" + proposerAccount.getRespect() + "]" + plugin.mainColor + " has nominated " + plugin.highlightColor + nominated.getDisplayName() + plugin.mainColor + " to be a " + govManager.getTypeOfGovLeader() + "!"));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + govManager.getTypeOfGovLeader() + " count is currently " + config.getGovLeaders().size() + "/" + config.getMaxLeaders() + " (" + (config.getMaxLeaders() - config.getGovLeaders().size()) + " slots available)."));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + "If elected, " + nominated.getDisplayName() + " will replace " + competitor.getDisplayName() + "."));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + nominated.getDisplayName() + plugin.highlightColor + "'s Respect Level: " + nominatedAccount.getRespect() + plugin.defaultColor + "."));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + competitor.getDisplayName() + plugin.highlightColor + "'s Respect Level: " + competitorAccount.getRespect() + plugin.defaultColor + "."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + nominated.getDisplayName() + "'s " + plugin.highlightColor + "Respect Level: " + nominatedAccount.getRespect() + plugin.defaultColor + "."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + competitor.getDisplayName() + "'s " + plugin.highlightColor + "Respect Level: " + competitorAccount.getRespect() + plugin.defaultColor + "."));
 
         TextComponent voteYesMessage = new TextComponent("      CLICK TO VOTE YES");
         voteYesMessage.setColor(ChatColor.GREEN);
