@@ -201,55 +201,60 @@ public class VoteManager implements Listener {
 
     private void distributeRespect(boolean passed) {
 
-        int votesYes = getCurrentProposal().getVotedYes().size();
-        int votesNo = getCurrentProposal().getVotedNo().size();
-        int totalVotes = votesYes + votesNo;
-        float percentYes = (int) Math.round(100.0 / (totalVotes) * votesYes);
-        float percentNo = (int) Math.round(100.0 / (totalVotes) * votesNo);
+        if (config.getGovType() != 2) {
+            int votesYes = getCurrentProposal().getVotedYes().size();
+            int votesNo = getCurrentProposal().getVotedNo().size();
+            int totalVotes = votesYes + votesNo;
+            float percentYes = (int) Math.round(100.0 / (totalVotes) * votesYes);
+            float percentNo = (int) Math.round(100.0 / (totalVotes) * votesNo);
 
-        if (passed) {
-            for (Player votedYesPlayer : currentProposal.getVotedYes()) {
-                if (votedYesPlayer != currentProposal.getProposer() && votedYesPlayer.isOnline()) {
+            if (passed) {
+                for (Player votedYesPlayer : currentProposal.getVotedYes()) {
+                    if (votedYesPlayer != currentProposal.getProposer() && votedYesPlayer.isOnline()) {
 
-                    votedYesPlayer.playSound(votedYesPlayer.getLocation(), Sound.BLOCK_ANVIL_USE, 2.0F, 2.0F);
+                        votedYesPlayer.playSound(votedYesPlayer.getLocation(), Sound.BLOCK_ANVIL_USE, 2.0F, 2.0F);
 
-                    Account votedYesAccount = plugin.getAccountManager().getAccount(votedYesPlayer.getUniqueId());
-                    plugin.getAccountManager().incrementRespect(votedYesAccount, 1);
-                    votedYesPlayer.sendMessage(plugin.prefix + ChatColor.GREEN + "" + ChatColor.BOLD + "+1 Respect Point" + plugin.defaultColor + " for voting in the interest of the majority.");
+                        Account votedYesAccount = plugin.getAccountManager().getAccount(votedYesPlayer.getUniqueId());
+                        plugin.getAccountManager().incrementRespect(votedYesAccount, 1);
+                        votedYesPlayer.sendMessage(plugin.prefix + ChatColor.GREEN + "" + ChatColor.BOLD + "+1 Respect Point" + plugin.defaultColor + " for voting in the interest of the majority.");
+                    }
                 }
-            }
 
-            if (currentProposal.getProposer().isOnline()) {
+                if (currentProposal.getProposer().isOnline()) {
 
-                currentProposal.getProposer().playSound(currentProposal.getProposer().getLocation(), Sound.BLOCK_ANVIL_USE, 2.0F, 2.0F);
-
-                Account proposerAccount = plugin.getAccountManager().getAccount(currentProposal.getProposer().getUniqueId());
-                plugin.getAccountManager().incrementRespect(proposerAccount, 3);
-                currentProposal.getProposer().sendMessage(plugin.prefix + ChatColor.GREEN + "" + ChatColor.BOLD + "+3 Respect Points" + plugin.defaultColor + " for passing a proposal.");
-            }
-
-            if (currentProposal.getNominated() != null) {
-                if (currentProposal.getNominated().isOnline()) {
-
-                    currentProposal.getNominated().playSound(currentProposal.getProposer().getLocation(), Sound.BLOCK_ANVIL_USE, 2.0F, 2.0F);
+                    currentProposal.getProposer().playSound(currentProposal.getProposer().getLocation(), Sound.BLOCK_ANVIL_USE, 2.0F, 2.0F);
 
                     Account proposerAccount = plugin.getAccountManager().getAccount(currentProposal.getProposer().getUniqueId());
                     plugin.getAccountManager().incrementRespect(proposerAccount, 3);
-                    currentProposal.getNominated().sendMessage(plugin.prefix + ChatColor.GREEN + "" + ChatColor.BOLD + "+5 Respect Points" + plugin.defaultColor + " for being elected by the majority.");
+                    currentProposal.getProposer().sendMessage(plugin.prefix + ChatColor.GREEN + "" + ChatColor.BOLD + "+3 Respect Points" + plugin.defaultColor + " for passing a proposal.");
+                }
+
+                if (currentProposal.getNominated() != null) {
+                    if (currentProposal.getNominated().isOnline()) {
+
+                        currentProposal.getNominated().playSound(currentProposal.getProposer().getLocation(), Sound.BLOCK_ANVIL_USE, 2.0F, 2.0F);
+
+                        Account proposerAccount = plugin.getAccountManager().getAccount(currentProposal.getProposer().getUniqueId());
+                        plugin.getAccountManager().incrementRespect(proposerAccount, 3);
+                        currentProposal.getNominated().sendMessage(plugin.prefix + ChatColor.GREEN + "" + ChatColor.BOLD + "+5 Respect Points" + plugin.defaultColor + " for being elected by the majority.");
+                    }
+                }
+            }
+            else {
+                if (percentNo > 50) {
+                    if (currentProposal.getProposer().isOnline()) {
+                        currentProposal.getProposer().playSound(currentProposal.getProposer().getLocation(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 2.0F, 2.0F);
+
+                        Account proposerAccount = plugin.getAccountManager().getAccount(currentProposal.getProposer().getUniqueId());
+                        plugin.getAccountManager().incrementRespect(proposerAccount, 3);
+                        currentProposal.getProposer().sendMessage(plugin.prefix + ChatColor.RED + "" + ChatColor.BOLD + "-3 Respect Points" + plugin.defaultColor + " for proposing an unpopular vote.");
+                    }
+
                 }
             }
         }
         else {
-            if (percentNo > 50) {
-                if (currentProposal.getProposer().isOnline()) {
-                    currentProposal.getProposer().playSound(currentProposal.getProposer().getLocation(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 2.0F, 2.0F);
-
-                    Account proposerAccount = plugin.getAccountManager().getAccount(currentProposal.getProposer().getUniqueId());
-                    plugin.getAccountManager().incrementRespect(proposerAccount, 3);
-                    currentProposal.getProposer().sendMessage(plugin.prefix + ChatColor.RED + "" + ChatColor.BOLD + "-3 Respect Points" + plugin.defaultColor + " for proposing an unpopular vote.");
-                }
-
-            }
+            // Dictatorship proposal popularity system?
         }
     }
 
