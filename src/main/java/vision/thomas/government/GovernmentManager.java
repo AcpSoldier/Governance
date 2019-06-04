@@ -14,7 +14,7 @@ public class GovernmentManager {
     public GovernmentManager(Government plugin) {
 
         this.plugin = plugin;
-        this.config = new Config(plugin);
+        this.config = plugin.getConf();
     }
 
     public String setGovType(int newType) {

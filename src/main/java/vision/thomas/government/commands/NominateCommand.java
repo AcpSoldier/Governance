@@ -17,16 +17,16 @@ public class NominateCommand extends SubCommand {
 
     private Config config;
 
-    private Announcement announcement;
+    private Announcement announcements;
 
     public NominateCommand(Government plugin) {
 
         super(plugin, plugin.getName().toLowerCase(), "nominate", "<player name>", "Allows players nominate leaders.");
         this.plugin = plugin;
-        govManager = new GovernmentManager(plugin);
-        voteManager = new VoteManager(plugin);
-        config = new Config(plugin);
-        announcement = new Announcement(plugin);
+        govManager = plugin.getGovManager();
+        voteManager = plugin.getVoteManager();
+        config = plugin.getConf();
+        announcements = plugin.getAnnouncement();
     }
 
     @Override
@@ -118,7 +118,7 @@ public class NominateCommand extends SubCommand {
         proposal.setNominated(nominated);
         voteManager.setCurrentProposal(proposal);
 
-        announcement.announceElection(proposer, nominated);
+        announcements.announceElection(proposer, nominated);
         voteManager.startTimer(true);
     }
 
@@ -136,7 +136,7 @@ public class NominateCommand extends SubCommand {
         proposal.setCompetitor(competitor);
         voteManager.setCurrentProposal(proposal);
 
-        announcement.announceElectionCompetition(proposer, nominated, competitor);
+        announcements.announceElectionCompetition(proposer, nominated, competitor);
         voteManager.startTimer(true);
     }
 

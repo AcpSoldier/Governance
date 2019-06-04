@@ -29,11 +29,17 @@ public final class Government extends JavaPlugin {
 
     public String fullLine = ChatColor.GOLD + "" + ChatColor.BOLD + "" + ChatColor.STRIKETHROUGH + "---------------------------------------------";
 
-    public Config config;
+    private ProposalCommand proposalCommand;
 
-    public Announcement announcement = new Announcement(this);
+    private Config config;
+
+    private Announcement announcements;
 
     private SQLiteDatabase database;
+
+    private VoteManager voteManager;
+
+    private GovernmentManager govManager;
 
     private AccountManager accountManager;
 
@@ -45,9 +51,10 @@ public final class Government extends JavaPlugin {
 
         database = new SQLiteDatabase(getDataFolder() + File.separator + "database.sql");
         accountManager = new AccountManager(this);
-
-        ProposalCommand proposalCommand = new ProposalCommand(this);
-        VoteManager voteManager = new VoteManager(this);
+        govManager = new GovernmentManager(this);
+        voteManager = new VoteManager(this);
+        announcements = new Announcement(this);
+        proposalCommand = new ProposalCommand(this);
 
         CommandExec cmdEx = new CommandExec(this);
         cmdEx.register(new ConfigCommand(this));
@@ -99,6 +106,26 @@ public final class Government extends JavaPlugin {
     public AccountManager getAccountManager() {
 
         return accountManager;
+    }
+
+    public Config getConf() {
+
+        return config;
+    }
+
+    public VoteManager getVoteManager() {
+
+        return voteManager;
+    }
+
+    public Announcement getAnnouncement() {
+
+        return announcements;
+    }
+
+    public GovernmentManager getGovManager() {
+
+        return govManager;
     }
 
 }

@@ -22,19 +22,19 @@ public class VoteManager implements Listener {
 
     private GovernmentManager govManager;
 
-    private static Proposal currentProposal;
+    private Proposal currentProposal;
 
-    private static boolean isVoteInProgress = false;
+    private boolean isVoteInProgress = false;
 
-    private static boolean voteCountInProgress = false;
+    private boolean voteCountInProgress = false;
 
-    public static Map<Player, String> creatingProposal = new HashMap<>();
+    public Map<Player, String> creatingProposal = new HashMap<>();
 
     public VoteManager(Government plugin) {
 
         this.plugin = plugin;
-        config = new Config(plugin);
-        govManager = new GovernmentManager(plugin);
+        config = plugin.getConf();
+        govManager = plugin.getGovManager();
     }
 
     public void castVote(Player voter, Proposal proposal, String vote) {
@@ -49,6 +49,8 @@ public class VoteManager implements Listener {
     }
 
     public void startTimer(boolean isElection) {
+
+        Announcement announcements = plugin.getAnnouncement();
 
         new BukkitRunnable() {
 
@@ -69,20 +71,20 @@ public class VoteManager implements Listener {
                     if (time <= 0) {
                         setVoteCountInProgress(true);
                         if (isElection) {
-                            plugin.announcement.announceElectionVoteCount();
+                            announcements.announceElectionVoteCount();
                         }
                         else {
-                            plugin.announcement.announceVoteCount();
+                            announcements.announceVoteCount();
                         }
 
                         cancel();
                     }
                     else if (announceVoteAt.contains(time)) {
                         if (isElection) {
-                            plugin.announcement.announceElectionVoteTime(time);
+                            announcements.announceElectionVoteTime(time);
                         }
                         else {
-                            plugin.announcement.announceVoteTime(time);
+                            announcements.announceVoteTime(time);
                         }
                     }
                     time--;
@@ -95,6 +97,8 @@ public class VoteManager implements Listener {
     }
 
     public void countVotes(boolean election) {
+
+        Announcement announcements = plugin.getAnnouncement();
 
         new BukkitRunnable() {
 
@@ -110,10 +114,10 @@ public class VoteManager implements Listener {
                     if (percentYes >= config.getPercentNeededToPass()) {
 
                         if (election) {
-                            plugin.announcement.announceElectionResults(true, percentYes, percentNo, votesYes, votesNo, "");
+                            announcements.announceElectionResults(true, percentYes, percentNo, votesYes, votesNo, "");
                         }
                         else {
-                            plugin.announcement.announceProposalResults(true, percentYes, percentNo, votesYes, votesNo, "");
+                            announcements.announceProposalResults(true, percentYes, percentNo, votesYes, votesNo, "");
                         }
 
                         new BukkitRunnable() {
@@ -158,10 +162,10 @@ public class VoteManager implements Listener {
                     else {
 
                         if (election) {
-                            plugin.announcement.announceElectionResults(false, percentYes, percentNo, votesYes, votesNo, "Not enough votes in the positive.");
+                            announcements.announceElectionResults(false, percentYes, percentNo, votesYes, votesNo, "Not enough votes in the positive.");
                         }
                         else {
-                            plugin.announcement.announceProposalResults(false, percentYes, percentNo, votesYes, votesNo, "Not enough votes in the positive.");
+                            announcements.announceProposalResults(false, percentYes, percentNo, votesYes, votesNo, "Not enough votes in the positive.");
                         }
                         distributeRespect(false);
                         cancelProposal();
@@ -169,10 +173,10 @@ public class VoteManager implements Listener {
                 }
                 else {
                     if (election) {
-                        plugin.announcement.announceElectionResults(false, percentYes, percentNo, votesYes, votesNo, ("Not enough people voted. Minimum required votes is set to " + config.getMinVotesRequired()));
+                        announcements.announceElectionResults(false, percentYes, percentNo, votesYes, votesNo, ("Not enough people voted. Minimum required votes is set to " + config.getMinVotesRequired()));
                     }
                     else {
-                        plugin.announcement.announceProposalResults(false, percentYes, percentNo, votesYes, votesNo, ("Not enough people voted. Minimum required votes is set to " + config.getMinVotesRequired()));
+                        announcements.announceProposalResults(false, percentYes, percentNo, votesYes, votesNo, ("Not enough people voted. Minimum required votes is set to " + config.getMinVotesRequired()));
                     }
                     distributeRespect(false);
                     cancelProposal();
@@ -296,22 +300,22 @@ public class VoteManager implements Listener {
         currentProposal = proposal;
     }
 
-    public static boolean isVoteInProgress() {
+    public boolean isVoteInProgress() {
 
         return isVoteInProgress;
     }
 
-    public static void setVoteInProgress(boolean setVoteInProgress) {
+    public void setVoteInProgress(boolean setVoteInProgress) {
 
         isVoteInProgress = setVoteInProgress;
     }
 
-    public static boolean isVoteCountInProgress() {
+    public boolean isVoteCountInProgress() {
 
         return voteCountInProgress;
     }
 
-    public static void setVoteCountInProgress(boolean setVoteCountInProgress) {
+    public void setVoteCountInProgress(boolean setVoteCountInProgress) {
 
         voteCountInProgress = setVoteCountInProgress;
     }

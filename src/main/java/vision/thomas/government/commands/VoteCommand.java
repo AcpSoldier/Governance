@@ -21,10 +21,10 @@ public class VoteCommand extends SubCommand {
 
         super(plugin, plugin.getName().toLowerCase(), "vote", "[yes | no]", "Allows players to vote on an active proposal or election.");
         this.plugin = plugin;
-        voteManager = new VoteManager(plugin);
-        governmentManager = new GovernmentManager(plugin);
-        announcement = new Announcement(plugin);
-        config = new Config(plugin);
+        voteManager = plugin.getVoteManager();
+        governmentManager = plugin.getGovManager();
+        announcement = plugin.getAnnouncement();
+        config = plugin.getConf();
     }
 
     public boolean execute(CommandSender sender, String[] args) {

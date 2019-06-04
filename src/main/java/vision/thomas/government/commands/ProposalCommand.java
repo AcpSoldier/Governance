@@ -30,10 +30,10 @@ public class ProposalCommand extends SubCommand implements Listener {
         super(plugin, plugin.getName().toLowerCase(), "proposal", "[create | cancel | list]", "Allows players to create, cancel, and list proposals to be voted on.");
 
         this.plugin = plugin;
-        voteManager = new VoteManager(plugin);
-        governmentManager = new GovernmentManager(plugin);
-        announcement = new Announcement(plugin);
-        config = new Config(plugin);
+        voteManager = plugin.getVoteManager();
+        governmentManager = plugin.getGovManager();
+        announcement = plugin.getAnnouncement();
+        config = plugin.getConf();
     }
 
     public boolean execute(CommandSender sender, String[] args) {

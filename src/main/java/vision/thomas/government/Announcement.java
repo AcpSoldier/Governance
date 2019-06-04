@@ -18,7 +18,7 @@ public class Announcement {
 
     private Config config;
 
-    private GovernmentManager governmentManager;
+    private GovernmentManager govManager;
 
     private VoteManager voteManager;
 
@@ -27,9 +27,9 @@ public class Announcement {
     public Announcement(Government plugin) {
 
         this.plugin = plugin;
-        config = new Config(plugin);
-        voteManager = new VoteManager(plugin);
-        governmentManager = new GovernmentManager(plugin);
+        config = plugin.getConf();
+        govManager = plugin.getGovManager();
+        voteManager = plugin.getVoteManager();
     }
 
     public void announceProposal(Player proposer, Proposal proposal) {
@@ -44,7 +44,7 @@ public class Announcement {
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Reason: " + plugin.mainColor + "'" + proposal.getReason() + "'"));
 
         if (config.getGovType() == 1) {
-            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "You must be a " + governmentManager.getTypeOfGovLeader() + " to vote."));
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "You must be a " + govManager.getTypeOfGovLeader() + " to vote."));
         }
 
         TextComponent voteYesMessage = new TextComponent("      CLICK TO VOTE YES");
@@ -80,9 +80,9 @@ public class Announcement {
         playSoundIfEnabled(proposer, Sound.BLOCK_BEACON_ACTIVATE, 2.0F, 2.0F);
 
         Bukkit.broadcastMessage(plugin.fullLine);
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + proposer.getDisplayName() + plugin.highlightColor + "[" + proposerAccount.getRespect() + "]" + plugin.mainColor + " has nominated " + plugin.highlightColor + nominated.getDisplayName() + plugin.mainColor + " to be a " + governmentManager.getTypeOfGovLeader() + "!"));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + governmentManager.getTypeOfGovLeader() + " count is currently " + config.getGovLeaders().size() + "/" + config.getMaxLeaders() + " (" + (config.getMaxLeaders() - config.getGovLeaders().size()) + " slots available)."));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "If elected, " + nominated.getDisplayName() + " will not replace any current " + governmentManager.getTypeOfGovLeader() + "s."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + proposer.getDisplayName() + plugin.highlightColor + "[" + proposerAccount.getRespect() + "]" + plugin.mainColor + " has nominated " + plugin.highlightColor + nominated.getDisplayName() + plugin.mainColor + " to be a " + govManager.getTypeOfGovLeader() + "!"));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + govManager.getTypeOfGovLeader() + " count is currently " + config.getGovLeaders().size() + "/" + config.getMaxLeaders() + " (" + (config.getMaxLeaders() - config.getGovLeaders().size()) + " slots available)."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "If elected, " + nominated.getDisplayName() + " will not replace any current " + govManager.getTypeOfGovLeader() + "s."));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + nominated.getDisplayName() + plugin.highlightColor + "'s Respect Level: " + nominatedAccount.getRespect() + "."));
 
         TextComponent voteYesMessage = new TextComponent("      CLICK TO VOTE YES");
@@ -117,8 +117,8 @@ public class Announcement {
         playSoundIfEnabled(proposer, Sound.BLOCK_BEACON_ACTIVATE, 2.0F, 2.0F);
 
         Bukkit.broadcastMessage(plugin.fullLine);
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + proposer.getDisplayName() + plugin.highlightColor + "[" + proposerAccount.getRespect() + "]" + plugin.mainColor + " has nominated " + plugin.highlightColor + nominated.getDisplayName() + plugin.mainColor + " to be a " + governmentManager.getTypeOfGovLeader() + "!"));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + governmentManager.getTypeOfGovLeader() + " count is currently " + config.getGovLeaders().size() + "/" + config.getMaxLeaders() + " (" + (config.getMaxLeaders() - config.getGovLeaders().size()) + " slots available)."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + proposer.getDisplayName() + plugin.highlightColor + "[" + proposerAccount.getRespect() + "]" + plugin.mainColor + " has nominated " + plugin.highlightColor + nominated.getDisplayName() + plugin.mainColor + " to be a " + govManager.getTypeOfGovLeader() + "!"));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + govManager.getTypeOfGovLeader() + " count is currently " + config.getGovLeaders().size() + "/" + config.getMaxLeaders() + " (" + (config.getMaxLeaders() - config.getGovLeaders().size()) + " slots available)."));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + "If elected, " + nominated.getDisplayName() + " will replace " + competitor.getDisplayName() + "."));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + nominated.getDisplayName() + plugin.highlightColor + "'s Respect Level: " + nominatedAccount.getRespect() + plugin.defaultColor + "."));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + competitor.getDisplayName() + plugin.highlightColor + "'s Respect Level: " + competitorAccount.getRespect() + plugin.defaultColor + "."));
@@ -148,7 +148,7 @@ public class Announcement {
 
     public void announceAppeal(Player p, String appeal) {
 
-        Bukkit.broadcastMessage(plugin.prefix + " [" + governmentManager.getTypeOfGovLeader() + "] " + p.getName() + "'s public address: " + ChatColor.BLUE + appeal);
+        Bukkit.broadcastMessage(plugin.prefix + " [" + govManager.getTypeOfGovLeader() + "] " + p.getName() + "'s public address: " + ChatColor.BLUE + appeal);
         playSoundIfEnabled(p, Sound.BLOCK_BEACON_ACTIVATE, 2.0F, 1.0F);
     }
 
@@ -276,13 +276,13 @@ public class Announcement {
             if (competitor != null) {
                 Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + nominated + " won!"));
             }
-            delayedAnnouncement("" + plugin.prefix + plugin.highlightColor + "Putting " + nominated + " in office as a " + governmentManager.getTypeOfGovLeader() + "...", 40, false);
+            delayedAnnouncement("" + plugin.prefix + plugin.highlightColor + "Putting " + nominated + " in office as a " + govManager.getTypeOfGovLeader() + "...", 40, false);
             for (Player player : Bukkit.getOnlinePlayers()) {
                 playSoundIfEnabled(player, Sound.BLOCK_BEACON_POWER_SELECT, 2.0F, 2.0F);
             }
         }
         else {
-            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Proposal to elect " + plugin.highlightColor + nominated + plugin.defaultColor + " to be a " + plugin.highlightColor + governmentManager.getTypeOfGovLeader() + plugin.defaultColor + " has " + ChatColor.RED + "" + ChatColor.BOLD + "FAILED!"));
+            Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Proposal to elect " + plugin.highlightColor + nominated + plugin.defaultColor + " to be a " + plugin.highlightColor + govManager.getTypeOfGovLeader() + plugin.defaultColor + " has " + ChatColor.RED + "" + ChatColor.BOLD + "FAILED!"));
             if (competitor != null) {
                 Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + competitor.getDisplayName() + " won!"));
             }
@@ -395,10 +395,6 @@ public class Announcement {
         Player nominated = voteManager.getCurrentProposal().getNominated();
         Player competitor = voteManager.getCurrentProposal().getCompetitor();
 
-        System.out.println("Nominated's name: " + nominated.getDisplayName());
-        System.out.println("Nominated's UUID: " + nominated.getUniqueId());
-        System.out.println("Account manager: " + plugin.getAccountManager().toString());
-
         Account nominatedAccount = plugin.getAccountManager().getAccount(nominated.getUniqueId());
 
         if (timeLeftInSeconds >= 60) {
@@ -410,7 +406,7 @@ public class Announcement {
 
         Bukkit.broadcastMessage(plugin.fullLine);
         Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + "Only " + plugin.highlightColor + announceTime + plugin.mainColor + " left to vote in the election!"));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Elect " + plugin.highlightColor + nominated.getDisplayName() + plugin.defaultColor + " to be a " + plugin.highlightColor + governmentManager.getTypeOfGovLeader() + plugin.defaultColor + "."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Elect " + plugin.highlightColor + nominated.getDisplayName() + plugin.defaultColor + " to be a " + plugin.highlightColor + govManager.getTypeOfGovLeader() + plugin.defaultColor + "."));
         if (competitor != null) {
             Account competitorAccount = plugin.getAccountManager().getAccount(competitor.getUniqueId());
             Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "(" + nominated.getDisplayName() + plugin.highlightColor + "[" + nominatedAccount.getRespect() + "]" + plugin.defaultColor + " would replace " + competitor.getDisplayName() + plugin.highlightColor + "[" + competitorAccount.getRespect() + "]" + plugin.defaultColor + ")"));
@@ -428,7 +424,7 @@ public class Announcement {
 
         Bukkit.broadcastMessage(plugin.fullLine);
         Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + resigned.getDisplayName() + plugin.highlightColor + "[" + resignedAccount.getRespect() + "]" + plugin.mainColor + " has resigned from office!"));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + governmentManager.getTypeOfGovLeader() + " count is now " + config.getGovLeaders().size() + "/" + config.getMaxLeaders() + " (" + (config.getMaxLeaders() - config.getGovLeaders().size()) + " slots available)."));
+        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + govManager.getTypeOfGovLeader() + " count is now " + config.getGovLeaders().size() + "/" + config.getMaxLeaders() + " (" + (config.getMaxLeaders() - config.getGovLeaders().size()) + " slots available)."));
         Bukkit.broadcastMessage(plugin.fullLine);
 
         for (Player player : Bukkit.getOnlinePlayers()) {

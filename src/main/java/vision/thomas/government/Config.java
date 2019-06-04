@@ -11,33 +11,33 @@ public class Config {
 
     private Government plugin;
 
-    private static boolean isPluginEnabled;
+    private boolean isPluginEnabled;
 
-    private static boolean isVoteSoundsForAll;
+    private boolean isVoteSoundsForAll;
 
-    private static boolean isVoteSoundsForSelf;
+    private boolean isVoteSoundsForSelf;
 
-    private static int voteTimeInSeconds;
+    private int voteTimeInSeconds;
 
-    private static int minVotesRequired;
+    private int minVotesRequired;
 
-    private static int percentNeededToPass;
+    private int percentNeededToPass;
 
-    private static boolean chatWhileCountingVotes;
+    private boolean chatWhileCountingVotes;
 
-    private static List<Integer> announceVoteAt = new ArrayList<>();
+    private List<Integer> announceVoteAt = new ArrayList<>();
 
-    private static int govType;
+    private int govType;
 
-    private static int maxLeaders;
+    private int maxLeaders;
 
-    private static List<String> govLeaders = new ArrayList<>();
+    private List<String> govLeaders = new ArrayList<>();
 
-    private static int minTermLengthInMinutes;
+    private int minTermLengthInMinutes;
 
-    private static int maxTermLengthInMinutes;
+    private int maxTermLengthInMinutes;
 
-    private static List<String> allowedCommands = new ArrayList<>();
+    private List<String> allowedCommands = new ArrayList<>();
 
     public Config(Government plugin) {
 

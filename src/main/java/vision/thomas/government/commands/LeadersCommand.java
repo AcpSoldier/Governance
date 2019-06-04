@@ -23,8 +23,8 @@ public class LeadersCommand extends SubCommand {
         super(plugin, plugin.getName().toLowerCase(), "leaders", "", "Shows a list of the current government's leaders.");
 
         this.plugin = plugin;
-        config = new Config(plugin);
-        this.govManager = new GovernmentManager(plugin);
+        config = plugin.getConf();
+        govManager = plugin.getGovManager();
     }
 
     @Override
