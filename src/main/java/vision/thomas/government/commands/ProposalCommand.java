@@ -157,12 +157,6 @@ public class ProposalCommand extends SubCommand implements Listener {
 
                 if (centeredMessage.getMessagePxlSize(reason) > centeredMessage.MAX_PX) {
 
-                    for (int i = centeredMessage.getMessagePxlSize(reason); i > centeredMessage.MAX_PX; ) {
-
-                        reason = reason.substring(0, reason.length() - 1);
-                        i = centeredMessage.getMessagePxlSize(reason);
-                    }
-
                     String hoverMessage = "" + ChatColor.GRAY + ChatColor.BOLD + "...[Hover]" + plugin.mainColor;
                     reason = reason + hoverMessage;
 
