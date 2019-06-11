@@ -119,7 +119,7 @@ public class NominateCommand extends SubCommand {
         voteManager.setCurrentProposal(proposal);
 
         announcements.announceElection(proposer, nominated);
-        voteManager.startTimer(true);
+        voteManager.startTimer(proposal, true);
     }
 
     private void createElection(Player proposer, Player nominated, Player competitor) {
@@ -137,7 +137,7 @@ public class NominateCommand extends SubCommand {
         voteManager.setCurrentProposal(proposal);
 
         announcements.announceElectionCompetition(proposer, nominated, competitor);
-        voteManager.startTimer(true);
+        voteManager.startTimer(proposal, true);
     }
 
 }

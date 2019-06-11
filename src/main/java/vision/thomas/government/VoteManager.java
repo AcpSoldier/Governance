@@ -48,7 +48,7 @@ public class VoteManager implements Listener {
         }
     }
 
-    public void startTimer(boolean isElection) {
+    public void startTimer(Proposal proposal, boolean isElection) {
 
         Announcements announcements = plugin.getAnnouncement();
 
@@ -84,7 +84,7 @@ public class VoteManager implements Listener {
                             announcements.announceElectionVoteTime(time);
                         }
                         else {
-                            announcements.announceVoteTime(time);
+                            announcements.announceVoteTime(proposal, time);
                         }
                     }
                     time--;
