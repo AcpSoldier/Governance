@@ -152,48 +152,64 @@ public class ProposalCommand extends SubCommand implements Listener {
 
             else if (voteManager.creatingProposal.get(proposer) != null) {
 
-                if (centeredMessage.getMessagePxlSize(event.getMessage()) < centeredMessage.MAX_PX) {
+                String reason = "" + plugin.defaultColor + "Reason: " + plugin.mainColor;
+                reason = reason + event.getMessage();
 
-                    voteManager.setVoteInProgress(true);
-                    Proposal proposal = new Proposal(plugin);
-                    proposal.setCommand("/" + voteManager.creatingProposal.get(proposer));
-                    proposal.setReason(event.getMessage());
-                    proposal.setProposer(proposer);
-                    voteManager.setCurrentProposal(proposal);
+                if (centeredMessage.getMessagePxlSize(reason) > centeredMessage.MAX_PX) {
 
-                    if (config.getGovType() != 2) {
+                    for (int i = centeredMessage.getMessagePxlSize(reason); i > centeredMessage.MAX_PX; ) {
 
-                        proposer.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal created successfully.");
-
-                        announcements.announceProposal(proposer, proposal);
-                        voteManager.creatingProposal.remove(proposer);
-
-                        for (Player player : voteManager.creatingProposal.keySet()) {
-                            player.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal creation canceled; " + proposal.getProposer().getName() + " created one before you.");
-                        }
-
-                        voteManager.creatingProposal.clear();
-                        voteManager.startTimer(false);
-                    }
-                    else {
-                        announcements.announceDictatedProposal(proposal);
-                        voteManager.executeProposalCommand(60);
-                        voteManager.creatingProposal.remove(proposer);
-
-                        for (Player player : voteManager.creatingProposal.keySet()) {
-                            player.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal creation canceled; " + proposal.getProposer().getName() + " created one before you.");
-                        }
-
-                        voteManager.creatingProposal.clear();
+                        reason = reason.substring(0, reason.length() - 1);
+                        i = centeredMessage.getMessagePxlSize(reason);
                     }
 
+                    String hoverMessage = "" + ChatColor.GRAY + ChatColor.BOLD + "...[Hover]" + plugin.mainColor;
+                    reason = reason + hoverMessage;
+
+                    for (int i = centeredMessage.getMessagePxlSize(reason); i > centeredMessage.MAX_PX; ) {
+                        i = centeredMessage.getMessagePxlSize(reason);
+                        reason = reason.substring(0, reason.length() - hoverMessage.length() - 1);
+                        reason = reason + hoverMessage;
+                    }
+                }
+
+                voteManager.setVoteInProgress(true);
+                Proposal proposal = new Proposal(plugin);
+                proposal.setCommand("/" + voteManager.creatingProposal.get(proposer));
+                proposal.setReason(reason);
+                proposal.setFullReason(event.getMessage());
+                proposal.setProposer(proposer);
+                voteManager.setCurrentProposal(proposal);
+
+                if (config.getGovType() != 2) {
+
+                    proposer.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal created successfully.");
+
+                    announcements.announceProposal(proposer, proposal);
+                    voteManager.creatingProposal.remove(proposer);
+
+                    for (Player player : voteManager.creatingProposal.keySet()) {
+                        player.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal creation canceled; " + proposal.getProposer().getName() + " created one before you.");
+                    }
+
+                    voteManager.creatingProposal.clear();
+                    voteManager.startTimer(proposal, false);
                 }
                 else {
-                    proposer.sendMessage(plugin.prefix + "Reason must be short enough to fit on one line. Please try again.");
-                }
-            }
+                    announcements.announceDictatedProposal(proposal);
+                    voteManager.executeProposalCommand(60);
+                    voteManager.creatingProposal.remove(proposer);
 
+                    for (Player player : voteManager.creatingProposal.keySet()) {
+                        player.sendMessage(plugin.prefix + ChatColor.BOLD + "Proposal creation canceled; " + proposal.getProposer().getName() + " created one before you.");
+                    }
+
+                    voteManager.creatingProposal.clear();
+                }
+
+            }
         }
+
     }
 
     private void createProposal(Player proposer) {

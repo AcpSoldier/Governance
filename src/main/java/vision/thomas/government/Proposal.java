@@ -10,7 +10,9 @@ public class Proposal {
 
     private String command;
 
-    private String reason;
+    private String croppedReason;
+
+    private String fullReason;
 
     private Player proposer;
 
@@ -73,12 +75,22 @@ public class Proposal {
 
     public String getReason() {
 
-        return reason;
+        return croppedReason;
     }
 
-    public void setReason(String reason) {
+    public void setReason(String croppedReason) {
 
-        this.reason = reason;
+        this.croppedReason = croppedReason;
+    }
+
+    public String getFullReason() {
+
+        return fullReason;
+    }
+
+    public void setFullReason(String fullReason) {
+
+        this.fullReason = fullReason;
     }
 
     public Player getNominated() {

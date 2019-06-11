@@ -41,10 +41,22 @@ public class Announcements {
         Bukkit.broadcastMessage(plugin.fullLine);
         Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + proposer.getDisplayName() + plugin.highlightColor + "[" + account.getRespect() + "]" + plugin.mainColor + " has proposed a vote!"));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Run command: " + plugin.highlightColor + proposal.getCommand()));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Reason: " + plugin.mainColor + "'" + proposal.getReason() + "'"));
 
         if (config.getGovType() == 1) {
             Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "You must be a " + govManager.getTypeOfGovLeader() + " to vote."));
+        }
+
+        if (centeredMessage.getMessagePxlSize(proposal.getFullReason()) > centeredMessage.MAX_PX) {
+
+            TextComponent reasonMessage = new TextComponent(centeredMessage.get(plugin.mainColor + "" + proposal.getReason()));
+            reasonMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(plugin.mainColor + "Full reason: " + ChatColor.WHITE + proposal.getFullReason()).create()));
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.spigot().sendMessage(reasonMessage);
+            }
+        }
+        else {
+            Bukkit.broadcastMessage(centeredMessage.get(proposal.getReason()));
         }
 
         TextComponent voteYesMessage = new TextComponent("      CLICK TO VOTE YES");
@@ -211,7 +223,7 @@ public class Announcements {
         playSoundIfEnabled(canceler, Sound.BLOCK_BEACON_DEACTIVATE, 2.0F, 2.0F);
     }
 
-    public void announceVoteTime(int timeLeftInSeconds) {
+    public void announceVoteTime(Proposal proposal, int timeLeftInSeconds) {
 
         String announceTime;
 
@@ -225,7 +237,20 @@ public class Announcements {
         Bukkit.broadcastMessage(plugin.fullLine);
         Bukkit.broadcastMessage(centeredMessage.get(plugin.mainColor + "Only " + plugin.highlightColor + announceTime + plugin.mainColor + " left to vote on the current proposal!"));
         Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Run command: " + plugin.highlightColor + voteManager.getCurrentProposal().getCommand()));
-        Bukkit.broadcastMessage(centeredMessage.get(plugin.defaultColor + "Reason: " + plugin.mainColor + "'" + voteManager.getCurrentProposal().getReason() + "'"));
+
+        if (centeredMessage.getMessagePxlSize(proposal.getFullReason()) > centeredMessage.MAX_PX) {
+
+            TextComponent reasonMessage = new TextComponent(centeredMessage.get(plugin.mainColor + "" + proposal.getReason()));
+            reasonMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(plugin.mainColor + "Full reason: " + ChatColor.WHITE + proposal.getFullReason()).create()));
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.spigot().sendMessage(reasonMessage);
+            }
+        }
+        else {
+            Bukkit.broadcastMessage(centeredMessage.get(proposal.getReason()));
+        }
+
         Bukkit.broadcastMessage(plugin.fullLine);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
