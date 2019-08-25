@@ -21,7 +21,7 @@ public class NominateCommand extends SubCommand {
 
     public NominateCommand(Government plugin) {
 
-        super(plugin, plugin.getName().toLowerCase(), "nominate", "<player name>", "Allows players nominate leaders.");
+        super(plugin, plugin.getName().toLowerCase(), "nominate", "<player name>", "Allows players to nominate leaders.");
         this.plugin = plugin;
         govManager = plugin.getGovManager();
         voteManager = plugin.getVoteManager();
